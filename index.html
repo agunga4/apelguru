@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APeL - Aplikasi Pembelajaran Lengkap</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f0f0;
+        }
+        .neubrutalism {
+            border: 3px solid #000;
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+            transition: all 0.2s ease;
+        }
+        .neubrutalism:hover {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+        }
+        .neubrutalism-no-hover {
+            border: 3px solid #000;
+            box-shadow: 5px 5px 0px 0px rgba(0,0,0,1);
+        }
+        .bg-cyan-custom { background-color: #00FFFF; }
+        .bg-green-custom { background-color: #ADFF2F; }
+        .bg-purple-custom { background-color: #DA70D6; }
+        .bg-orange-custom { background-color: #FFA500; }
+        .bg-yellow-custom { background-color: #FFFF00; }
+        
+        section { display: none; }
+        section.active { display: block; }
+
+        .nav-active {
+            background-color: #000 !important;
+            color: #fff !important;
+        }
+    </style>
+</head>
+<body class="antialiased text-black">
+
+    <!-- NAVBAR -->
+    <nav class="sticky top-0 z-50 bg-white border-b-4 border-black px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+                <span class="text-4xl">🍎</span>
+                <h1 class="text-2xl font-800 font-bold tracking-tighter">APeL</h1>
+            </div>
+            
+            <div class="flex flex-wrap justify-center gap-2">
+                <button onclick="navigateTo('home')" id="nav-home" class="nav-btn px-4 py-1 font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Beranda</button>
+                <button onclick="navigateTo('games')" id="nav-games" class="nav-btn px-4 py-1 font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Games</button>
+                <button onclick="navigateTo('perangkat')" id="nav-perangkat" class="nav-btn px-4 py-1 font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Perangkat Ajar</button>
+                <button onclick="navigateTo('administrasi')" id="nav-administrasi" class="nav-btn px-4 py-1 font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Administrasi</button>
+                <button onclick="navigateTo('pengembangan')" id="nav-pengembangan" class="nav-btn px-4 py-1 font-bold border-2 border-black hover:bg-black hover:text-white transition-all">Pengembangan Guru</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT WRAPPER -->
+    <main class="max-w-7xl mx-auto p-6 min-h-screen">
+
+        <!-- HALAMAN BERANDA -->
+        <section id="home" class="active animate-fadeIn">
+            <!-- Hero Section -->
+            <div class="neubrutalism-no-hover bg-gradient-to-r from-cyan-400 to-blue-500 p-8 md:p-16 mb-12 rounded-none">
+                <h2 class="text-4xl md:text-6xl font-extrabold mb-4 leading-none">Portal Pembelajaran Masa Depan.</h2>
+                <p class="text-xl font-semibold mb-8 max-w-2xl">Selamat datang di APeL (Aplikasi Pembelajaran Lengkap). Transformasi digital untuk guru SD & SMP yang inovatif dan kreatif.</p>
+                <div class="flex flex-wrap gap-4">
+                    <button onclick="navigateTo('games')" class="neubrutalism bg-yellow-custom px-8 py-3 font-bold text-lg">Mulai Bermain</button>
+                    <button onclick="navigateTo('perangkat')" class="neubrutalism bg-white px-8 py-3 font-bold text-lg">Lihat Materi</button>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+                <div class="neubrutalism bg-green-custom p-6 text-center">
+                    <div class="text-4xl font-extrabold">11</div>
+                    <div class="font-bold">Games Seru</div>
+                </div>
+                <div class="neubrutalism bg-purple-custom p-6 text-center">
+                    <div class="text-4xl font-extrabold">20+</div>
+                    <div class="font-bold">Modul Ajar</div>
+                </div>
+                <div class="neubrutalism bg-cyan-custom p-6 text-center">
+                    <div class="text-4xl font-extrabold">100+</div>
+                    <div class="font-bold">Bank Soal</div>
+                </div>
+                <div class="neubrutalism bg-orange-custom p-6 text-center">
+                    <div class="text-4xl font-extrabold">15+</div>
+                    <div class="font-bold">LKPD Digital</div>
+                </div>
+            </div>
+
+            <!-- Preview Games -->
+            <h3 class="text-3xl font-extrabold mb-6 italic underline">Top 3 Games Pekan Ini!</h3>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="neubrutalism bg-white p-4">
+                    <div class="h-40 bg-gray-200 border-2 border-black mb-4 flex items-center justify-center text-5xl">🎮</div>
+                    <h4 class="font-bold text-xl mb-2">Jagoan Kata</h4>
+                    <p class="text-sm">Asah kemampuan literasi dengan tantangan teka-teki yang seru.</p>
+                </div>
+                <div class="neubrutalism bg-white p-4">
+                    <div class="h-40 bg-gray-200 border-2 border-black mb-4 flex items-center justify-center text-5xl">🚀</div>
+                    <h4 class="font-bold text-xl mb-2">Perang Antariksa</h4>
+                    <p class="text-sm">Matematika dasar jadi petualangan luar angkasa yang menantang.</p>
+                </div>
+                <div class="neubrutalism bg-white p-4">
+                    <div class="h-40 bg-gray-200 border-2 border-black mb-4 flex items-center justify-center text-5xl">🐾</div>
+                    <h4 class="font-bold text-xl mb-2">Jalan Pintar Kancil</h4>
+                    <p class="text-sm">Gunakan logika untuk membantu Kancil melewati rintangan.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HALAMAN GAMES -->
+        <section id="games">
+            <h2 class="text-4xl font-extrabold mb-10 text-center bg-yellow-custom inline-block px-4 border-4 border-black">ZONE GAMES EDUKASI</h2>
+            
+            <div class="space-y-12">
+                <!-- Literasi -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="bg-cyan-custom p-1 border-2 border-black">📖 Literasi</span></h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Jagoan Kata</h4> <p class="text-xs mt-2">Menyusun kalimat efektif.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Mancing Kata</h4> <p class="text-xs mt-2">Mencari sinonim & antonim.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Pesta Nusantara</h4> <p class="text-xs mt-2">Mengenal budaya lewat teks.</p> </div>
+                    </div>
+                </div>
+
+                <!-- Numerasi -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="bg-green-custom p-1 border-2 border-black">🔢 Numerasi</span></h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Perang Antariksa</h4> <p class="text-xs mt-2">Operasi hitung cepat.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Koki Cilik (Martabak Pecahan)</h4> <p class="text-xs mt-2">Visualisasi pecahan.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Si Taktik (Number Line)</h4> <p class="text-xs mt-2">Garis bilangan interaktif.</p> </div>
+                    </div>
+                </div>
+
+                <!-- Logika -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="bg-purple-custom p-1 border-2 border-black">🧠 Logika & Kreativitas</span></h3>
+                    <div class="grid md:grid-cols-3 gap-6">
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Jalan Pintar Kancil</h4> <p class="text-xs mt-2">Algoritma dasar & rute.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Blok Pintar (Geo Squad)</h4> <p class="text-xs mt-2">Bangun ruang & geometri.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">Doodle AI</h4> <p class="text-xs mt-2">Gambar & tebak AI.</p> </div>
+                    </div>
+                </div>
+
+                <!-- Lainnya -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4 flex items-center gap-2"><span class="bg-orange-custom p-1 border-2 border-black">✨ Lainnya</span></h3>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">NusaBoard (Mind Map)</h4> <p class="text-xs mt-2">Papan kolaborasi ide.</p> </div>
+                        <div class="neubrutalism bg-white p-5"> <h4 class="font-bold">AI Basketball</h4> <p class="text-xs mt-2">Fisika & sudut lemparan.</p> </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HALAMAN PERANGKAT AJAR -->
+        <section id="perangkat">
+            <h2 class="text-4xl font-extrabold mb-10 text-center">PERANGKAT AJAR</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="neubrutalism bg-cyan-custom p-10 flex flex-col items-center justify-center text-center cursor-pointer">
+                    <span class="text-6xl mb-4">📂</span>
+                    <h3 class="text-3xl font-black italic">MODUL AJAR</h3>
+                    <p class="font-bold mt-2">Lengkap Kurikulum Merdeka</p>
+                </div>
+                <div class="neubrutalism bg-yellow-custom p-10 flex flex-col items-center justify-center text-center cursor-pointer">
+                    <span class="text-6xl mb-4">📝</span>
+                    <h3 class="text-3xl font-black italic">LKPD</h3>
+                    <p class="font-bold mt-2">Lembar Kerja Peserta Didik</p>
+                </div>
+                <div class="neubrutalism bg-green-custom p-10 flex flex-col items-center justify-center text-center cursor-pointer">
+                    <span class="text-6xl mb-4">📚</span>
+                    <h3 class="text-3xl font-black italic">BAHAN AJAR</h3>
+                    <p class="font-bold mt-2">PPT & Video Pembelajaran</p>
+                </div>
+                <div class="neubrutalism bg-purple-custom p-10 flex flex-col items-center justify-center text-center cursor-pointer">
+                    <span class="text-6xl mb-4">📊</span>
+                    <h3 class="text-3xl font-black italic">BANK SOAL</h3>
+                    <p class="font-bold mt-2">Penilaian Harian & Sumatif</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- HALAMAN ADMINISTRASI -->
+        <section id="administrasi">
+            <h2 class="text-4xl font-extrabold mb-8">ADMINISTRASI GURU</h2>
+            
+            <div class="grid md:grid-cols-3 gap-6 mb-12">
+                <button class="neubrutalism bg-white p-4 font-bold flex items-center justify-center gap-2">👤 Daftar Hadir</button>
+                <button class="neubrutalism bg-white p-4 font-bold flex items-center justify-center gap-2">📒 Buku Nilai Digital</button>
+                <button class="neubrutalism bg-white p-4 font-bold flex items-center justify-center gap-2">📅 Jadwal & Rencana</button>
+            </div>
+
+            <div class="neubrutalism-no-hover bg-white p-8">
+                <h3 class="text-2xl font-bold mb-6 border-b-4 border-black pb-2">Dashboard Statistik Kelas</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="border-2 border-black p-4">
+                        <p class="text-sm font-bold opacity-70">Total Siswa</p>
+                        <p class="text-3xl font-black">32</p>
+                    </div>
+                    <div class="border-2 border-black p-4 bg-green-200">
+                        <p class="text-sm font-bold opacity-70">Hadir Hari Ini</p>
+                        <p class="text-3xl font-black">30</p>
+                    </div>
+                    <div class="border-2 border-black p-4">
+                        <p class="text-sm font-bold opacity-70">Rata-rata Nilai</p>
+                        <p class="text-3xl font-black">84.5</p>
+                    </div>
+                    <div class="border-2 border-black p-4 bg-yellow-200">
+                        <p class="text-sm font-bold opacity-70">Tugas Terkumpul</p>
+                        <p class="text-3xl font-black">92%</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- HALAMAN PENGEMBANGAN GURU -->
+        <section id="pengembangan">
+            <div class="neubrutalism-no-hover bg-black text-white p-10 mb-12 relative overflow-hidden">
+                <div class="relative z-10">
+                    <h2 class="text-4xl font-black mb-4 italic text-yellow-custom">TERUS BELAJAR, TERUS MENGINSPIRASI!</h2>
+                    <p class="text-lg max-w-xl font-medium">"Pendidikan adalah senjata paling mematikan di dunia, karena dengan itu Anda bisa mengubah dunia." — Nelson Mandela</p>
+                </div>
+                <div class="absolute -right-10 -bottom-10 text-9xl opacity-20 rotate-12">🎓</div>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="neubrutalism bg-white p-6">
+                    <div class="w-12 h-12 bg-purple-custom border-2 border-black flex items-center justify-center font-bold text-xl mb-4">01</div>
+                    <h4 class="text-xl font-bold mb-3">Perangkat Siap Pakai</h4>
+                    <p class="text-sm mb-4">Kumpulan contoh Modul Ajar dan RPP terbaik dari guru-guru hebat di seluruh Indonesia.</p>
+                    <a href="#" class="font-bold underline">Unduh Sekarang →</a>
+                </div>
+                <div class="neubrutalism bg-white p-6">
+                    <div class="w-12 h-12 bg-cyan-custom border-2 border-black flex items-center justify-center font-bold text-xl mb-4">02</div>
+                    <h4 class="text-xl font-bold mb-3">Ide Praktik Baik</h4>
+                    <p class="text-sm mb-4">Inspirasi metode pembelajaran inovatif yang sudah terbukti berhasil di dalam kelas.</p>
+                    <a href="#" class="font-bold underline">Baca Artikel →</a>
+                </div>
+                <div class="neubrutalism bg-white p-6">
+                    <div class="w-12 h-12 bg-green-custom border-2 border-black flex items-center justify-center font-bold text-xl mb-4">03</div>
+                    <h4 class="text-xl font-bold mb-3">Pelatihan Mini</h4>
+                    <p class="text-sm mb-4">Video tutorial singkat 5-10 menit tentang penggunaan tool AI dalam pembelajaran.</p>
+                    <a href="#" class="font-bold underline">Ikuti Kelas →</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-black text-white border-t-4 border-black mt-20 p-10">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="text-center md:text-left">
+                <h2 class="text-3xl font-black text-yellow-custom">APeL</h2>
+                <p class="text-sm opacity-80 mt-2 font-bold">Aplikasi Pembelajaran Lengkap</p>
+                <p class="text-xs opacity-60 mt-1">Dibuat oleh: <span class="text-white">Agung Aljabari, M.Pd.</span></p>
+            </div>
+            
+            <div class="flex gap-6 text-3xl">
+                <a href="#" class="hover:text-cyan-custom transition-colors">📸</a>
+                <a href="#" class="hover:text-red-500 transition-colors">📺</a>
+                <a href="#" class="hover:text-green-custom transition-colors">🎵</a>
+            </div>
+
+            <div class="text-sm font-bold border-2 border-white p-2">
+                © 2026 APeL - Indonesia
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        function navigateTo(pageId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('section');
+            sections.forEach(section => {
+                section.classList.remove('active');
+            });
+
+            // Show target section
+            const targetSection = document.getElementById(pageId);
+            if (targetSection) {
+                targetSection.classList.add('active');
+                window.scrollTo(0, 0);
+            }
+
+            // Update Nav Buttons
+            const navButtons = document.querySelectorAll('.nav-btn');
+            navButtons.forEach(btn => {
+                btn.classList.remove('nav-active');
+                if (btn.id === `nav-${pageId}`) {
+                    btn.classList.add('nav-active');
+                }
+            });
+        }
+
+        // Initialize state
+        window.onload = () => {
+            navigateTo('home');
+        };
+    </script>
+</body>
+</html>
