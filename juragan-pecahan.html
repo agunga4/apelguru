@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JURAGAN PECAHAN - APeL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B35;
+            --secondary: #4CAF50;
+            --dark: #1a1a1a;
+            --white: #ffffff;
+            --brutal-shadow: 6px 6px 0px #000;
+            --brutal-border: 4px solid #000;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Comfortaa', cursive;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            background-color: #fef9ef;
+            color: var(--dark);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #game-container {
+            width: 100%;
+            max-width: 500px;
+            height: 100vh;
+            max-height: 800px;
+            background: #fff;
+            border: var(--brutal-border);
+            box-shadow: var(--brutal-shadow);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header & UI Elements */
+        .header {
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: var(--brutal-border);
+            background: var(--primary);
+            color: white;
+        }
+
+        .back-btn {
+            background: #fff;
+            border: 2px solid #000;
+            padding: 5px 10px;
+            cursor: pointer;
+            text-decoration: none;
+            color: #000;
+            font-weight: bold;
+            font-size: 12px;
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .back-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: none;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-weight: bold;
+        }
+
+        /* Game Screens */
+        .screen {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* Tutorial & Menu */
+        .menu-content {
+            margin-top: 40px;
+        }
+
+        .btn-main {
+            background: var(--secondary);
+            color: white;
+            border: var(--brutal-border);
+            padding: 15px 30px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: var(--brutal-shadow);
+            margin: 10px;
+            transition: 0.1s;
+        }
+
+        .btn-main:active {
+            transform: translate(4px, 4px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        /* Kitchen Area */
+        .recipe-card {
+            background: #fffbe6;
+            border: var(--brutal-border);
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 4px 4px 0px #000;
+        }
+
+        .kitchen-floor {
+            flex: 1;
+            position: relative;
+            background: #eee;
+            border: var(--brutal-border);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: radial-gradient(#ccc 2px, transparent 2px);
+            background-size: 20px 20px;
+        }
+
+        .pot {
+            width: 120px;
+            height: 100px;
+            background: #555;
+            border-radius: 0 0 40px 40px;
+            border: 5px solid #000;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pot::before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            right: -10px;
+            height: 15px;
+            background: #333;
+            border: 4px solid #000;
+            border-radius: 10px;
+        }
+
+        .steam {
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 30px;
+            animation: steamAnim 2s infinite;
+            opacity: 0;
+        }
+
+        @keyframes steamAnim {
+            0% { transform: translate(-50%, 0); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translate(-50%, -40px); opacity: 0; }
+        }
+
+        .ingredient-fly {
+            position: absolute;
+            font-size: 40px;
+            z-index: 10;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* Ingredients Picker */
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-card {
+            background: #fff;
+            border: var(--brutal-border);
+            padding: 10px;
+            cursor: pointer;
+            box-shadow: 4px 4px 0px #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 0.1s;
+        }
+
+        .option-card:active {
+            transform: translate(2px, 2px);
+            box-shadow: 2px 2px 0px #000;
+        }
+
+        .fraction-ui {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .fraction-ui span {
+            display: block;
+            border-top: 2px solid #000;
+        }
+
+        /* Timer Bar */
+        .timer-container {
+            width: 100%;
+            height: 20px;
+            background: #000;
+            margin-bottom: 15px;
+            border: 2px solid #000;
+        }
+
+        #timer-fill {
+            height: 100%;
+            background: var(--secondary);
+            width: 100%;
+            transition: width 0.1s linear;
+        }
+
+        /* Feedback */
+        #feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 60px;
+            font-weight: bold;
+            z-index: 100;
+            pointer-events: none;
+            display: none;
+            -webkit-text-stroke: 2px #000;
+        }
+
+        .star-container {
+            font-size: 40px;
+            margin: 15px 0;
+        }
+
+        .star { color: #ccc; }
+        .star.filled { color: #FFD700; text-shadow: 2px 2px 0 #000; }
+
+        .hidden { display: none; }
+
+        .shaking {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <!-- Header -->
+    <div class="header">
+        <a href="https://apel-pembelajaran.vercel.app" class="back-btn">Kembali</a>
+        <div class="stats">
+            <span id="level-display">Level: 1</span>
+            <span id="score-display">⭐ 0</span>
+        </div>
+    </div>
+
+    <!-- Screen: Start -->
+    <div id="screen-start" class="screen active">
+        <h1 style="font-size: 36px; margin-bottom: 5px;">👨‍🍳 JURAGAN PECAHAN</h1>
+        <p>Masak hidangan lezat dengan takaran pecahan yang tepat!</p>
+        <div class="menu-content">
+            <div style="background: #e3f2fd; border: 3px solid #000; padding: 10px; margin-bottom: 20px; text-align: left;">
+                <strong>Cara Bermain:</strong><br>
+                1. Baca resep di atas.<br>
+                2. Hitung hasil pecahan.<br>
+                3. Klik bahan yang benar.<br>
+                4. Kumpulkan 3 bintang!
+            </div>
+            <button class="btn-main" onclick="startGame()">MULAI MASAK!</button>
+        </div>
+    </div>
+
+    <!-- Screen: Game -->
+    <div id="screen-game" class="screen">
+        <div class="timer-container">
+            <div id="timer-fill"></div>
+        </div>
+        
+        <div class="recipe-card">
+            <div id="recipe-text" style="font-size: 18px; font-weight: bold;">Mencampur: 1/2 + 1/4 Sawi</div>
+        </div>
+
+        <div class="kitchen-floor">
+            <div class="steam" id="steam-cloud">☁️</div>
+            <div class="pot" id="cooking-pot"></div>
+        </div>
+
+        <div class="options-grid" id="options-container">
+            <!-- Options will be generated here -->
+        </div>
+    </div>
+
+    <!-- Screen: Result -->
+    <div id="screen-result" class="screen">
+        <h2 id="result-title">Level Selesai!</h2>
+        <div class="star-container" id="star-rank">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p id="result-text">Skor Anda: 0</p>
+        <button class="btn-main" onclick="nextLevel()" id="btn-next">Lanjut Level</button>
+        <button class="btn-main" onclick="resetGame()" style="background: var(--primary);">Ulangi Game</button>
+    </div>
+
+    <div id="feedback">BENAR!</div>
+</div>
+
+<script>
+    // Game Data & State
+    let currentLevel = 1; // 1: Penjumlahan, 2: Pengurangan, 3: Perkalian
+    let currentQuestionIdx = 0;
+    let score = 0;
+    let timer;
+    let timeLeft;
+    let levelScore = 0;
+    let totalQuestionsPerLevel = 10;
+    
+    const ingredients = [
+        { icon: '🥬', name: 'Sawi' },
+        { icon: '🥕', name: 'Wortel' },
+        { icon: '🍗', name: 'Ayam' },
+        { icon: '🍄', name: 'Jamur' },
+        { icon: '🍤', name: 'Udang' }
+    ];
+
+    // Audio Context for sound effects
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playTone(freq, type, duration) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function soundCorrect() {
+        playTone(523.25, 'sine', 0.3);
+        setTimeout(() => playTone(659.25, 'sine', 0.3), 100);
+    }
+
+    function soundWrong() {
+        playTone(220, 'square', 0.4);
+    }
+
+    // Fraction Helper
+    function gcd(a, b) {
+        return b ? gcd(b, a % b) : a;
+    }
+
+    function simplify(num, den) {
+        let common = gcd(num, den);
+        return [num / common, den / common];
+    }
+
+    // Generate Question
+    function generateQuestion() {
+        let q = {};
+        let n1, d1, n2, d2, resN, resD, op;
+
+        const denominators = [2, 3, 4, 5, 6, 8, 10];
+        
+        if (currentLevel === 1) { // Penjumlahan
+            d1 = denominators[Math.floor(Math.random() * 4)];
+            d2 = d1; // Keep it simple with same denominators or simple multiples
+            n1 = Math.floor(Math.random() * (d1 - 1)) + 1;
+            n2 = Math.floor(Math.random() * (d1 - 1)) + 1;
+            resN = n1 + n2;
+            resD = d1;
+            op = "+";
+        } else if (currentLevel === 2) { // Pengurangan
+            d1 = denominators[Math.floor(Math.random() * 4)];
+            d2 = d1;
+            n1 = Math.floor(Math.random() * (d1 - 1)) + 2;
+            n2 = Math.floor(Math.random() * (n1 - 1)) + 1;
+            resN = n1 - n2;
+            resD = d1;
+            op = "-";
+        } else { // Perkalian
+            d1 = denominators[Math.floor(Math.random() * 3)];
+            d2 = denominators[Math.floor(Math.random() * 3)];
+            n1 = Math.floor(Math.random() * 2) + 1;
+            n2 = Math.floor(Math.random() * 2) + 1;
+            resN = n1 * n2;
+            resD = d1 * d2;
+            op = "×";
+        }
+
+        let [sn, sd] = simplify(resN, resD);
+        q.text = `${n1}/${d1} ${op} ${n2}/${d2}`;
+        q.correct = { n: sn, d: sd };
+        
+        // Generate wrong options
+        let options = [{ n: sn, d: sd }];
+        while (options.length < 4) {
+            let wn = Math.floor(Math.random() * 5) + 1;
+            let wd = Math.floor(Math.random() * 8) + 2;
+            let [wsn, wsd] = simplify(wn, wd);
+            if (!options.some(o => o.n === wsn && o.d === wsd)) {
+                options.push({ n: wsn, d: wsd });
+            }
+        }
+        q.options = options.sort(() => Math.random() - 0.5);
+        q.ingredient = ingredients[Math.floor(Math.random() * ingredients.length)];
+        return q;
+    }
+
+    // Game Logic
+    let activeQuestion = null;
+
+    function startGame() {
+        showScreen('screen-game');
+        currentQuestionIdx = 0;
+        levelScore = 0;
+        score = 0;
+        loadQuestion();
+    }
+
+    function loadQuestion() {
+        if (currentQuestionIdx >= totalQuestionsPerLevel) {
+            endLevel();
+            return;
+        }
+
+        activeQuestion = generateQuestion();
+        document.getElementById('level-display').innerText = `Level: ${currentLevel}`;
+        document.getElementById('score-display').innerText = `⭐ ${score}`;
+        document.getElementById('recipe-text').innerHTML = `Campurkan ${activeQuestion.ingredient.icon} ${activeQuestion.ingredient.name}:<br><span style="font-size:28px">${activeQuestion.text}</span>`;
+        
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        activeQuestion.options.forEach(opt => {
+            const card = document.createElement('div');
+            card.className = 'option-card';
+            card.innerHTML = `
+                <div style="font-size:24px">${activeQuestion.ingredient.icon}</div>
+                <div class="fraction-ui">${opt.n} <span>${opt.d}</span></div>
+            `;
+            card.onclick = () => checkAnswer(opt, card);
+            container.appendChild(card);
+        });
+
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timeLeft = 100;
+        const bar = document.getElementById('timer-fill');
+        timer = setInterval(() => {
+            timeLeft -= 0.5;
+            bar.style.width = timeLeft + "%";
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                checkAnswer(null, null); // Timeout
+            }
+        }, 100);
+    }
+
+    function checkAnswer(selected, element) {
+        clearInterval(timer);
+        const feedback = document.getElementById('feedback');
+        const pot = document.getElementById('cooking-pot');
+        const steam = document.getElementById('steam-cloud');
+
+        let isCorrect = selected && selected.n === activeQuestion.correct.n && selected.d === activeQuestion.correct.d;
+
+        if (isCorrect) {
+            score += 10 + Math.floor(timeLeft / 10);
+            levelScore++;
+            soundCorrect();
+            feedback.innerText = "MANTAP!";
+            feedback.style.color = "#4CAF50";
+            
+            // Animation
+            const rect = element.getBoundingClientRect();
+            const fly = document.createElement('div');
+            fly.className = 'ingredient-fly';
+            fly.innerText = activeQuestion.ingredient.icon;
+            fly.style.left = rect.left + 'px';
+            fly.style.top = rect.top + 'px';
+            document.body.appendChild(fly);
+
+            setTimeout(() => {
+                fly.style.left = (window.innerWidth / 2 - 20) + 'px';
+                fly.style.top = (window.innerHeight / 2 - 50) + 'px';
+                fly.style.opacity = '0';
+            }, 50);
