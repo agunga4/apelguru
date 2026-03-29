@@ -75,7 +75,9 @@
             font-size: 0.9rem;
         }
 
-        .timer-box { background: var(--orange); }
+        .timer-box {
+            background: var(--orange);
+        }
 
         /* Grid Game */
         #grid {
@@ -157,8 +159,15 @@
             box-shadow: 1px 1px 0px #000;
         }
 
-        .btn-back { background: #ff5252; color: white; }
-        .btn-restart { background: var(--teal); color: white; }
+        .btn-back {
+            background: #ff5252;
+            color: white;
+        }
+
+        .btn-restart {
+            background: var(--teal);
+            color: white;
+        }
 
         /* Overlay */
         .overlay {
@@ -177,8 +186,13 @@
             padding: 20px;
         }
 
-        .overlay h2 { font-size: 2.5rem; margin: 0 0 20px 0; color: var(--orange); -webkit-text-stroke: 1.5px #000; }
-        
+        .overlay h2 {
+            font-size: 2.5rem;
+            margin: 0 0 20px 0;
+            color: var(--orange);
+            -webkit-text-stroke: 1.5px #000;
+        }
+
         .level-select {
             display: flex;
             flex-direction: column;
@@ -203,13 +217,16 @@
         }
 
         @media (max-width: 400px) {
-            .cell { font-size: 0.9rem; }
-            .game-container { padding: 10px; }
+            .cell {
+                font-size: 0.9rem;
+            }
+            .game-container {
+                padding: 10px;
+            }
         }
     </style>
 </head>
 <body>
-
     <canvas id="particle-canvas"></canvas>
     <canvas id="confetti"></canvas>
 
@@ -221,36 +238,42 @@
 
         <div id="grid"></div>
 
-        <div class="word-list" id="word-list"></div>
+        <div id="word-list" class="word-list"></div>
 
         <div class="controls">
-            <button class="btn-back" onclick="window.location.href='https://apel-pembelajaran.vercel.app'">KEMBALI</button>
-            <button class="btn-restart" onclick="location.reload()">RESTART</button>
+            <button class="btn-back" onclick="location.href='/#games'">KEMBALI</button>
+            <button class="btn-restart" onclick="showMenu()">RESTART</button>
         </div>
 
-        <!-- Menu Start -->
+        <!-- Start Menu -->
         <div id="start-menu" class="overlay">
             <h2>KATA SAKTI</h2>
-            <p>Temukan 8 kata tersembunyi!</p>
+            <p style="margin-bottom: 20px;">Temukan kata-kata tersembunyi!</p>
             <div class="level-select">
                 <button class="level-btn" onclick="startGame('EASY')">MUDAH (3-4 Huruf)</button>
-                <button class="level-btn" style="background:#FFAB40" onclick="startGame('MEDIUM')">SEDANG (5-6 Huruf)</button>
-                <button class="level-btn" style="background:#D500F9" onclick="startGame('HARD')">SULIT (7-8 Huruf)</button>
+                <button class="level-btn" onclick="startGame('MEDIUM')">SEDANG (5-6 Huruf)</button>
+                <button class="level-btn" onclick="startGame('HARD')">SULIT (7-8 Huruf)</button>
+                <button class="btn-outline" style="background:#fff;" onclick="location.href='/#games'">⬅ Kembali ke Portal 🍎</button>
             </div>
         </div>
 
-        <!-- Menu Game Over / Win -->
+        <!-- End Menu -->
         <div id="end-menu" class="overlay" style="display: none;">
             <h2 id="end-title">BAGUS!</h2>
-            <p id="end-msg">Skor Akhir: 0</p>
-            <button class="level-btn" onclick="location.reload()">MAIN LAGI</button>
+            <p id="end-msg" style="font-size: 1.2rem; margin-bottom: 20px;"></p>
+            <button class="level-btn" onclick="showMenu()">MAIN LAGI</button>
         </div>
     </div>
 
     <script>
-        const KOSAKATA = ["MAMA", "PAPA", "BUKU", "MEJA", "KURSI", "PINTU", "JENDELA", "KUCING", "ANJING", "IKAN", "BURUNG", "POHON", "BUNGA", "RUMAH", "TEMAN", "GURU", "MURID", "SEKOLAH", "MAKAN", "MINUM", "TIDUR", "JALAN", "LARI", "BACA", "TULIS"];
-        
-        let grid = [];
+        const KOSAKATA = [
+            "MAMA", "PAPA", "BUKU", "MEJA", "KURSI", "PINTU", "JENDELA", "KUCING", "ANJING", "IKAN", "BURUNG", "POHON", "BUNGA", "RUMAH", "TEMAN", "GURU", "MURID", "SEKOLAH", "MAKAN", "MINUM", "TIDUR", "JALAN", "LARI", "BACA", "TULIS",
+            "PENSIL", "PAPAN", "KAPUR", "TAS", "SEPATU", "TOPI", "BAJU", "CELANA", "KAOS", "MATA", "HIDUNG", "TELINGA", "MULUT", "TANGAN", "KAKI", "KEPALA", "RAMBUT", "GIGI", "PERUT",
+            "MATAHARI", "BULAN", "BINTANG", "LANGIT", "AWAN", "HUJAN", "ANGIN", "PETIR", "PELANGI", "GUNUNG", "LAUT", "SUNGAI", "DANAU", "SAWAH", "KEBUN", "PASAR", "KOTA", "DESA", "HUTAN", "PANTAI",
+            "KOMPUTER", "TELEPON", "BELAJAR", "BERMAIN", "KELUARGA", "SAUDARA", "SEPEDA", "MAKANAN", "MINUMAN"
+        ];
+
+        let gridData = [];
         let targetWords = [];
         let foundWords = [];
         let selectedCells = [];
@@ -259,19 +282,20 @@
         let gameActive = false;
         let timerInterval;
 
-        // Audio Context
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(freq, type, duration) {
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = type;
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
 
         const clickSound = () => playSound(400, 'sine', 0.1);
@@ -280,13 +304,14 @@
             setTimeout(() => playSound(800, 'triangle', 0.3), 100);
         };
 
-        // Initialize Particles Background
         const pCanvas = document.getElementById('particle-canvas');
         const pCtx = pCanvas.getContext('2d');
         let particles = [];
+
         function initParticles() {
             pCanvas.width = window.innerWidth;
             pCanvas.height = window.innerHeight;
+            particles = [];
             for(let i=0; i<30; i++) {
                 particles.push({
                     x: Math.random() * pCanvas.width,
@@ -296,6 +321,7 @@
                 });
             }
         }
+
         function drawParticles() {
             pCtx.clearRect(0,0,pCanvas.width, pCanvas.height);
             pCtx.fillStyle = "rgba(255,255,255,0.3)";
@@ -309,18 +335,28 @@
             requestAnimationFrame(drawParticles);
         }
 
-        // Word Search Logic
+        function showMenu() {
+            clearInterval(timerInterval);
+            document.getElementById('start-menu').style.display = 'flex';
+            document.getElementById('end-menu').style.display = 'none';
+            gameActive = false;
+        }
+
         function startGame(level) {
             document.getElementById('start-menu').style.display = 'none';
             gameActive = true;
-            
-            // Filter words by level
+            foundWords = [];
+            selectedCells = [];
+            score = 0;
+            timeLeft = 120;
+            document.getElementById('score').textContent = score;
+            document.getElementById('timer').textContent = timeLeft;
+
             let filtered = [];
             if(level === 'EASY') filtered = KOSAKATA.filter(w => w.length <= 4);
             else if(level === 'MEDIUM') filtered = KOSAKATA.filter(w => w.length >= 5 && w.length <= 6);
             else filtered = KOSAKATA.filter(w => w.length >= 7);
 
-            // Pick 8 random words
             targetWords = filtered.sort(() => 0.5 - Math.random()).slice(0, 8);
             
             generateGrid();
@@ -330,28 +366,34 @@
         }
 
         function generateGrid() {
-            grid = Array(100).fill(null);
-            
-            targetWords.forEach(word => {
-                let placed = false;
-                while(!placed) {
-                    const dir = [[1,0], [0,1], [1,1], [-1,1]][Math.floor(Math.random()*4)];
-                    const x = Math.floor(Math.random()*10);
-                    const y = Math.floor(Math.random()*10);
-                    
-                    if(canPlace(word, x, y, dir)) {
-                        for(let i=0; i<word.length; i++) {
-                            grid[(y + i*dir[1])*10 + (x + i*dir[0])] = word[i];
+            let success = false;
+            let attempts = 0;
+            while (!success && attempts < 10) {
+                gridData = Array(100).fill(null);
+                let allPlaced = true;
+                for (const word of targetWords) {
+                    let placed = false;
+                    let wordAttempts = 0;
+                    while (!placed && wordAttempts < 50) {
+                        const dir = [[1,0], [0,1], [1,1], [-1,1], [0,-1], [-1,0], [-1,-1], [1,-1]][Math.floor(Math.random()*8)];
+                        const x = Math.floor(Math.random()*10);
+                        const y = Math.floor(Math.random()*10);
+                        if(canPlace(word, x, y, dir)) {
+                            for(let i=0; i<word.length; i++) {
+                                gridData[(y + i*dir[1])*10 + (x + i*dir[0])] = word[i];
+                            }
+                            placed = true;
                         }
-                        placed = true;
+                        wordAttempts++;
                     }
+                    if (!placed) { allPlaced = false; break; }
                 }
-            });
-
-            // Fill empty
+                if (allPlaced) success = true;
+                attempts++;
+            }
             const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             for(let i=0; i<100; i++) {
-                if(!grid[i]) grid[i] = letters[Math.floor(Math.random()*26)];
+                if(!gridData[i]) gridData[i] = letters[Math.floor(Math.random()*26)];
             }
         }
 
@@ -360,7 +402,7 @@
                 const nx = x + i*dir[0];
                 const ny = y + i*dir[1];
                 if(nx < 0 || nx >= 10 || ny < 0 || ny >= 10) return false;
-                const char = grid[ny*10 + nx];
+                const char = gridData[ny*10 + nx];
                 if(char && char !== word[i]) return false;
             }
             return true;
@@ -369,7 +411,7 @@
         function renderGrid() {
             const gridEl = document.getElementById('grid');
             gridEl.innerHTML = '';
-            grid.forEach((char, i) => {
+            gridData.forEach((char, i) => {
                 const div = document.createElement('div');
                 div.className = 'cell';
                 div.textContent = char;
@@ -399,29 +441,24 @@
             if(selectedCells.length === 0) {
                 selectedCells.push(index);
                 cells[index].classList.add('selected');
-            } else if(selectedCells.length === 1) {
+            } else {
                 const start = selectedCells[0];
                 const end = index;
-                
                 if(start === end) {
                     cells[start].classList.remove('selected');
                     selectedCells = [];
                     return;
                 }
-
                 const path = getPath(start, end);
                 if(path) {
-                    const selectedWord = path.map(i => grid[i]).join('');
+                    const selectedWord = path.map(i => gridData[i]).join('');
                     const reversedWord = selectedWord.split('').reverse().join('');
-                    
                     if(targetWords.includes(selectedWord) && !foundWords.includes(selectedWord)) {
                         markFound(path, selectedWord);
                     } else if(targetWords.includes(reversedWord) && !foundWords.includes(reversedWord)) {
                         markFound(path, reversedWord);
                     }
                 }
-                
-                // Reset Selection
                 cells[start].classList.remove('selected');
                 selectedCells = [];
             }
@@ -432,12 +469,9 @@
             const x2 = end % 10, y2 = Math.floor(end / 10);
             const dx = x2 - x1, dy = y2 - y1;
             const dist = Math.max(Math.abs(dx), Math.abs(dy));
-            
             if(dx !== 0 && dy !== 0 && Math.abs(dx) !== Math.abs(dy)) return null;
-            
             const stepX = dx === 0 ? 0 : dx / dist;
             const stepY = dy === 0 ? 0 : dy / dist;
-            
             let path = [];
             for(let i=0; i<=dist; i++) {
                 path.push((y1 + i*stepY)*10 + (x1 + i*stepX));
@@ -452,10 +486,8 @@
                 document.querySelector(`[data-index="${i}"]`).classList.add('found');
             });
             document.getElementById('word-' + word).classList.add('done');
-            
             score += 100;
             document.getElementById('score').textContent = score;
-
             if(foundWords.length === targetWords.length) {
                 endGame(true);
             }
@@ -475,7 +507,6 @@
             const overlay = document.getElementById('end-menu');
             const title = document.getElementById('end-title');
             const msg = document.getElementById('end-msg');
-            
             overlay.style.display = 'flex';
             if(win) {
                 title.textContent = "SAKTI!";
@@ -488,7 +519,6 @@
             }
         }
 
-        // Confetti Effect
         function startConfetti() {
             const canvas = document.getElementById('confetti');
             const ctx = canvas.getContext('2d');
@@ -512,7 +542,7 @@
                     p.y += p.v;
                     if(p.y > canvas.height) p.y = -20;
                 });
-                if(gameActive === false) requestAnimationFrame(draw);
+                if(!gameActive) requestAnimationFrame(draw);
             }
             draw();
         }
@@ -521,6 +551,7 @@
             initParticles();
             drawParticles();
         };
+        window.onresize = initParticles;
     </script>
 </body>
 </html>
