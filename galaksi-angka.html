@@ -85,7 +85,7 @@
         let currentProblem = null;
         let meteor = { y: -100, x: 0, speed: 1.5, shape: [] };
         let lasers = [];
-        let timer = 10;
+        let timer = 10; // Increase initial time
         let timerInterval;
         let animationId;
 
@@ -204,6 +204,7 @@
                 btn.innerText = currentProblem.options[i];
                 btn.className = 'ans-btn';
                 btn.disabled = false;
+                timer = 10; // Reset timer
             });
             clearInterval(timerInterval);
             timerInterval = setInterval(() => {
