@@ -205,9 +205,11 @@
                 btn.className = 'ans-btn';
                 btn.disabled = false;
                 timer = 10; // Reset timer
-            });
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
+            });    ansBtns.forEach((btn, i) => {           clearInterval(timerInterval);
+                                                        btn.innerText = currentProblem.options[i];
+        btn.className = 'ans-btn';
+        btn.disabled = false;
+    });            timerInterval = setInterval(() => {
                 if (!gameActive) return;
                 timer -= 0.1;
                 if (timer <= 0) wrongAnswer();
