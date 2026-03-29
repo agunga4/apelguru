@@ -323,6 +323,8 @@
         }
 
         function endGame() {
+                    const highScore = localStorage.getItem('geoSquadHigh') || 0;
+                    if (score > highScore) localStorage.setItem('geoSquadHigh', score);
             showScreen('screen-result');
             document.getElementById('final-score').innerText = score;
             
