@@ -176,7 +176,8 @@
     <div id="screen-gasing" class="screen">
         <h2>GASING SPIN</h2>
         <p>Klik secepat mungkin dalam 5 detik!</p>
-        <div id="gasing-arena">
+        <div id="332
+            ">
             <div id="gasing-obj"></div>
         </div>
         <div class="score-display">Klik: <span id="gasing-count">0</span></div>
@@ -329,12 +330,11 @@
             }
         }, 1000);
 
-        document.getElementById('gasing-arena').onmousedown = () => {
+        document.getElementById('gasing-obj').onmousedown = () => {
             if(gasingActive) {
                 gasingClicks++;
                 document.getElementById('gasing-count').innerText = gasingClicks;
-                document.getElementById('gasing-obj').style.transform = `rotate(${gasingClicks * 20}deg)`;
-                playSound(600 + (gasingClicks * 2), 'square', 0.05);
+    document.getElementById('gasing-obj').style.transform = `rotate(${gasingClicks * 20}deg)`;                playSound(600 + (gasingClicks * 2), 'square', 0.05);
             }
         };
     }
