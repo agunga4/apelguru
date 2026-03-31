@@ -14,7 +14,12 @@
             --shadow: 6px 6px 0px #000;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
 
         body {
             background-color: #f0f0f0;
@@ -239,8 +244,7 @@
         let currentQuestion = 0;
         let timer = 20;
         let timerInterval;
-        let drawingInt
-            let highScore = localStorage.getItem('doodlePintarHigh') || 0;erval;
+        let highScore = parseInt(localStorage.getItem('doodlePintarHigh') || '0', 10);
         let isDrawing = false;
         let speedMultiplier = 1;
         let currentPaths = [];
@@ -305,12 +309,12 @@
             { name: "Mobil", cat: "Kendaraan", paths: [
                 {p:[[100,280],[300,280],[300,220],[250,220],[220,170],[150,170],[120,220],[100,220]], close:true},
                 {p:[[130,280],[130,310],[170,310],[170,280]]}, // Wheel L
-                {p:[[230,280],[230,310],[270,310],[270,280]]}  // Wheel R
+                {p:[[230,280],[230,310],[270,310],[270,280]]} // Wheel R
             ]},
             { name: "Pesawat", cat: "Kendaraan", paths: [
                 {p:[[100,200],[300,200],[320,180],[320,220],[300,200]], close:true}, // Body
                 {p:[[180,200],[220,130],[250,200]]}, // Wing L
-                {p:[[180,200],[220,270],[250,200]]}  // Wing R
+                {p:[[180,200],[220,270],[250,200]]} // Wing R
             ]},
             { name: "Bintang", cat: "Alam", paths: [
                 {p:[[200,50],[230,150],[330,150],[250,210],[280,310],[200,250],[120,310],[150,210],[70,150],[170,150]], close:true}
@@ -382,7 +386,7 @@
             hintText.innerText = `${q.cat} (${q.name.length} Huruf)`;
             timer = 20;
             updateTimerUI();
-            
+
             // Create Options
             const opts = [q.name];
             while (opts.length < 4) {
@@ -401,7 +405,7 @@
             });
 
             startDrawing(q.paths);
-            
+
             timerInterval = setInterval(() => {
                 timer -= 0.1;
                 updateTimerUI();
@@ -428,7 +432,7 @@
 
             let pathIdx = 0;
             let pointIdx = 0;
-            
+
             function animate() {
                 if (pathIdx >= paths.length) return;
 
@@ -452,18 +456,18 @@
                     pointIdx = 0;
                 }
 
-                // Kecepatan animasi diatur di sini
                 setTimeout(() => {
                     animationFrame = requestAnimationFrame(animate);
                 }, 50 / speedMultiplier);
             }
+
             animate();
         }
 
         function checkAnswer(selected, correct, btn) {
             clearInterval(timerInterval);
             cancelAnimationFrame(animationFrame);
-            
+
             // Tunjukkan semua garis secara instan
             drawInstant(gameQuestions[currentQuestion].paths);
 
@@ -484,7 +488,7 @@
             }
 
             scoreDisplay.innerText = `SKOR: ${score}`;
-            
+
             setTimeout(() => {
                 currentQuestion++;
                 nextQuestion();
@@ -513,19 +517,20 @@
 
         function endGame() {
             document.getElementById('end-screen').classList.remove('hidden');
-            document.getElementById('final-score').innerText = `Skor Akhir: ${score}`;
-                
-    // Update high score
-    if(score > highScore) {
-        highScore = score;
-        localStorage.setItem('doodlePintarHigh', score);
-    }
-    document.getElementById('final-score').innerText = `Skor Akhir: ${score}\nRekor Tertinggi: ${highScore}`;
+
+            // Update high score
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('doodlePintarHigh', score);
+            }
+
+            document.getElementById('final-score').innerText =
+                `Skor Akhir: ${score}\nRekor Tertinggi: ${highScore}`;
+
             playSound(500, 'sine', 0.2);
             playSound(700, 'sine', 0.2);
             playSound(900, 'sine', 0.5);
         }
-
     </script>
 </body>
 </html>
