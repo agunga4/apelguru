@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <title>BOLA PINTAR - Basket Matematika Mudah Dimainkan</title>
+  <title>BOLA PINTAR - Basket Matematika Arcade</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,17 +12,17 @@
   <style>
     :root {
       --orange: #ef6c00;
-      --blue: #125ea7;
+      --orange-2: #ff9d35;
+      --blue: #1565c0;
       --sky: #dff4ff;
-      --court: #d08a3c;
-      --court-dark: #b06e28;
-      --yellow: #ffd54f;
+      --court: #d99a48;
+      --court-2: #c9822d;
       --green: #22c55e;
       --red: #ef4444;
-      --ink: #08121c;
+      --yellow: #ffd54f;
+      --ink: #09121c;
       --white: #ffffff;
-      --border: 3px solid #08121c;
-      --radius: 22px;
+      --border: 3px solid #09121c;
     }
 
     * {
@@ -41,7 +41,7 @@
 
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background: radial-gradient(circle at top, #4fc3f7 0%, #1565c0 40%, #081a31 100%);
+      background: radial-gradient(circle at top, #4fc3f7 0%, #1565c0 42%, #08192f 100%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -52,11 +52,11 @@
       width: 100%;
       max-width: 500px;
       height: min(94dvh, 920px);
-      border: var(--border);
       border-radius: 28px;
+      border: var(--border);
       overflow: hidden;
-      background: rgba(255,255,255,0.06);
       box-shadow: 0 20px 50px rgba(0,0,0,0.32);
+      background: rgba(255,255,255,0.06);
       display: grid;
       grid-template-rows: auto 1fr;
       position: relative;
@@ -65,38 +65,38 @@
     header {
       z-index: 20;
       padding: max(10px, env(safe-area-inset-top)) 10px 10px;
-      background: linear-gradient(180deg, #ff922e 0%, #ef6c00 100%);
+      background: linear-gradient(180deg, var(--orange-2) 0%, var(--orange) 100%);
       border-bottom: var(--border);
       display: grid;
-      grid-template-columns: 86px 1fr 86px;
-      gap: 8px;
+      grid-template-columns: 84px 1fr 84px;
       align-items: center;
+      gap: 8px;
     }
 
-    .stat-box {
-      min-height: 56px;
-      border: 2px solid #08121c;
-      border-radius: 16px;
+    .top-card {
       background: rgba(255,255,255,0.95);
-      box-shadow: 0 4px 0 #08121c;
+      border: 2px solid #09121c;
+      border-radius: 16px;
+      min-height: 54px;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      box-shadow: 0 4px 0 #09121c;
       padding: 6px;
     }
 
-    .stat-label {
-      font-size: 0.7rem;
-      line-height: 1;
+    .top-card .label {
+      font-size: 0.68rem;
       font-weight: 800;
+      line-height: 1;
       opacity: 0.65;
     }
 
-    .stat-value {
-      margin-top: 4px;
-      font-weight: 800;
+    .top-card .value {
+      margin-top: 5px;
       font-size: 1rem;
+      font-weight: 800;
       line-height: 1;
     }
 
@@ -108,20 +108,20 @@
 
     .title-wrap h1 {
       font-family: 'Anton', sans-serif;
-      font-size: 1.6rem;
+      font-size: 1.55rem;
       line-height: 1;
       letter-spacing: 0.02em;
     }
 
     .title-wrap p {
       margin-top: 4px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 700;
     }
 
     .game-wrap {
-      position: relative;
       min-height: 0;
+      position: relative;
       overflow: hidden;
     }
 
@@ -130,14 +130,14 @@
       height: 100%;
       display: block;
       background:
-        linear-gradient(to bottom, rgba(255,255,255,0.10), rgba(255,255,255,0) 30%),
-        linear-gradient(to bottom, #e3f6ff 0%, #bfe7ff 46%, #e2b26b 46%, #c88434 100%);
+        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0) 30%),
+        linear-gradient(to bottom, #e5f7ff 0%, #bfe7ff 40%, #e4b36e 40%, #cb8635 100%);
     }
 
-    .overlay-ui {
-      pointer-events: none;
+    .ui-layer {
       position: absolute;
       inset: 0;
+      pointer-events: none;
       z-index: 8;
     }
 
@@ -146,75 +146,76 @@
       top: 14px;
       left: 50%;
       transform: translateX(-50%);
-      width: min(90%, 340px);
+      width: min(88%, 340px);
       background: rgba(255,255,255,0.96);
       border: var(--border);
       border-radius: 18px;
       padding: 10px 14px;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.14);
       text-align: center;
-      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
     }
 
-    .question-box .label {
+    .question-box .small {
       font-size: 0.72rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       opacity: 0.6;
     }
 
-    .question-box .text {
+    .question-box .big {
       margin-top: 4px;
       font-family: 'Anton', sans-serif;
-      font-size: clamp(1.4rem, 5vw, 2.2rem);
+      font-size: clamp(1.45rem, 5vw, 2.25rem);
       line-height: 1;
-      color: #08121c;
+      color: #09121c;
     }
 
-    .floating-hud {
+    .hud-top {
       position: absolute;
-      right: 12px;
-      top: 90px;
+      top: 104px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(92%, 420px);
       display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 8px;
-      width: min(145px, 34vw);
     }
 
-    .chip {
-      background: rgba(8,18,28,0.84);
+    .hud-chip {
+      background: rgba(9,18,28,0.82);
       color: white;
-      border: 1px solid rgba(255,255,255,0.12);
       border-radius: 14px;
       padding: 8px 10px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.16);
       backdrop-filter: blur(6px);
     }
 
-    .chip .c-label {
-      font-size: 0.64rem;
+    .hud-chip .chip-label {
+      font-size: 0.62rem;
       font-weight: 800;
       letter-spacing: 0.08em;
       opacity: 0.7;
     }
 
-    .chip .c-value {
+    .hud-chip .chip-value {
       margin-top: 3px;
       font-size: 1rem;
       font-weight: 800;
     }
 
     .meter {
-      height: 8px;
-      margin-top: 8px;
-      background: rgba(255,255,255,0.15);
+      height: 7px;
       border-radius: 999px;
+      background: rgba(255,255,255,0.12);
+      margin-top: 7px;
       overflow: hidden;
     }
 
     .meter-fill {
       height: 100%;
       width: 0%;
-      background: linear-gradient(90deg, #fde047, #fb923c);
       border-radius: 999px;
+      background: linear-gradient(90deg, #fde047, #fb923c);
       transition: width 160ms linear;
     }
 
@@ -223,12 +224,12 @@
       left: 50%;
       bottom: calc(14px + env(safe-area-inset-bottom));
       transform: translateX(-50%);
-      width: min(calc(100% - 22px), 420px);
-      text-align: center;
-      color: white;
-      background: rgba(8,18,28,0.82);
+      width: min(calc(100% - 24px), 430px);
+      padding: 10px 14px;
       border-radius: 999px;
-      padding: 10px 12px;
+      text-align: center;
+      background: rgba(9,18,28,0.82);
+      color: white;
       font-size: 0.78rem;
       font-weight: 700;
       box-shadow: 0 10px 24px rgba(0,0,0,0.18);
@@ -242,7 +243,7 @@
       justify-content: center;
       align-items: center;
       padding: 22px;
-      background: linear-gradient(180deg, rgba(8,18,28,0.68), rgba(8,18,28,0.84));
+      background: linear-gradient(180deg, rgba(9,18,28,0.7), rgba(9,18,28,0.84));
       backdrop-filter: blur(6px);
     }
 
@@ -252,24 +253,24 @@
 
     .panel {
       width: min(100%, 390px);
+      background: rgba(255,255,255,0.96);
       border: var(--border);
       border-radius: 28px;
-      background: rgba(255,255,255,0.96);
       padding: 22px 20px;
       text-align: center;
-      box-shadow: 0 20px 45px rgba(0,0,0,0.26);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.24);
     }
 
     .panel h2 {
       font-family: 'Anton', sans-serif;
+      color: var(--orange);
       font-size: clamp(2.2rem, 8vw, 3.5rem);
       line-height: 0.95;
-      color: var(--orange);
       margin-bottom: 10px;
     }
 
     .panel p {
-      color: rgba(8,18,28,0.8);
+      color: rgba(9,18,28,0.8);
       line-height: 1.45;
       font-size: 0.98rem;
     }
@@ -317,18 +318,18 @@
     }
 
     .badges {
-      margin-top: 14px;
       display: flex;
       justify-content: center;
       gap: 8px;
       flex-wrap: wrap;
+      margin-top: 14px;
     }
 
     .badge {
       padding: 8px 12px;
-      border: 2px solid #08121c;
+      border: 2px solid #09121c;
       border-radius: 999px;
-      background: #fff4d4;
+      background: #fff5d6;
       font-size: 0.82rem;
       font-weight: 800;
     }
@@ -339,16 +340,15 @@
       }
 
       .title-wrap h1 {
-        font-size: 1.34rem;
+        font-size: 1.32rem;
       }
 
       .title-wrap p {
         font-size: 0.72rem;
       }
 
-      .floating-hud {
-        width: 132px;
-        right: 10px;
+      .hud-top {
+        width: min(94%, 420px);
       }
 
       .hint {
@@ -360,51 +360,49 @@
 <body>
   <div class="app">
     <header>
-      <div class="stat-box">
-        <div class="stat-label">SKOR</div>
-        <div class="stat-value" id="scoreVal">0</div>
+      <div class="top-card">
+        <div class="label">SKOR</div>
+        <div class="value" id="scoreVal">0</div>
       </div>
 
       <div class="title-wrap">
         <h1>BOLA PINTAR</h1>
-        <p>Basket Matematika yang Lebih Fair</p>
+        <p>Basket Matematika Arcade</p>
       </div>
 
-      <div class="stat-box">
-        <div class="stat-label">NYAWA</div>
-        <div class="stat-value" id="livesVal">❤️❤️❤️</div>
+      <div class="top-card">
+        <div class="label">NYAWA</div>
+        <div class="value" id="livesVal">❤️❤️❤️</div>
       </div>
     </header>
 
     <div class="game-wrap">
       <canvas id="gameCanvas"></canvas>
 
-      <div class="overlay-ui">
+      <div class="ui-layer">
         <div class="question-box">
-          <div class="label">SOAL</div>
-          <div class="text" id="questionText">7 + 8 = ?</div>
+          <div class="small">SOAL</div>
+          <div class="big" id="questionText">17 + 20 = ?</div>
         </div>
 
-        <div class="floating-hud">
-          <div class="chip">
-            <div class="c-label">COMBO</div>
-            <div class="c-value" id="comboVal">x1</div>
+        <div class="hud-top">
+          <div class="hud-chip">
+            <div class="chip-label">COMBO</div>
+            <div class="chip-value" id="comboVal">x1</div>
             <div class="meter"><div class="meter-fill" id="comboFill"></div></div>
           </div>
-
-          <div class="chip">
-            <div class="c-label">WAKTU</div>
-            <div class="c-value" id="timerVal">12.0s</div>
+          <div class="hud-chip">
+            <div class="chip-label">WAKTU</div>
+            <div class="chip-value" id="timerVal">12.0s</div>
           </div>
-
-          <div class="chip">
-            <div class="c-label">HI SCORE</div>
-            <div class="c-value" id="hiVal">0</div>
+          <div class="hud-chip">
+            <div class="chip-label">HI SCORE</div>
+            <div class="chip-value" id="hiVal">0</div>
           </div>
         </div>
 
         <div class="hint" id="hintText">
-          Tarik bola dari bawah, bidik ke tengah ring yang benar, lalu lepaskan.
+          Tarik bola dari bawah. Tenaga sudah diperkuat supaya tembakan lebih mudah sampai.
         </div>
       </div>
 
@@ -412,8 +410,8 @@
         <div class="panel">
           <h2>BOLA PINTAR</h2>
           <p>
-            Versi ini dibuat lebih gampang dan fair. Ring tidak ketutup, target lebih lega,
-            dan tembakan dibantu agar anak lebih mudah bermain.
+            Versi ini dibetulkan dari masalah sebelumnya: ring lebih rendah, launcher lebih tinggi,
+            HUD tidak menutup target, dan power tembakan dibuat lebih kuat.
           </p>
 
           <div class="mode-grid">
@@ -497,7 +495,7 @@
     const world = {
       width: 0,
       height: 0,
-      gravity: 0.28,
+      gravity: 0.22,
       floorY: 0
     };
 
@@ -550,8 +548,8 @@
     }
 
     function scoreSound(perfect = false) {
-      beep(perfect ? 880 : 700, 0.08, 'triangle', 0.06);
-      setTimeout(() => beep(perfect ? 1120 : 920, 0.1, 'triangle', 0.05), 70);
+      beep(perfect ? 900 : 720, 0.08, 'triangle', 0.06);
+      setTimeout(() => beep(perfect ? 1160 : 940, 0.1, 'triangle', 0.05), 70);
     }
 
     function missSound() {
@@ -569,7 +567,7 @@
 
     function getHighScore() {
       try {
-        const v = parseInt(localStorage.getItem('bolaPintarFairHigh') || '0', 10);
+        const v = parseInt(localStorage.getItem('bolaPintarArcadeHigh') || '0', 10);
         return Number.isNaN(v) ? 0 : v;
       } catch (e) {
         return 0;
@@ -578,7 +576,7 @@
 
     function setHighScore(v) {
       try {
-        localStorage.setItem('bolaPintarFairHigh', String(v));
+        localStorage.setItem('bolaPintarArcadeHigh', String(v));
       } catch (e) {}
     }
 
@@ -600,10 +598,10 @@
 
       world.width = rect.width;
       world.height = rect.height;
-      world.floorY = rect.height - 60;
+      world.floorY = rect.height - 70;
 
       launcher.x = rect.width / 2;
-      launcher.y = rect.height - 76;
+      launcher.y = rect.height - 108;
 
       if (!shot.active) {
         shot.x = launcher.x;
@@ -659,32 +657,26 @@
       }
 
       options.sort(() => Math.random() - 0.5);
-
       return { text: `${q} = ?`, answer, options };
     }
 
     function layoutHoops() {
       if (!currentProblem) return;
 
-      const xs = [world.width * 0.23, world.width * 0.5, world.width * 0.77];
-      const hoopY = clamp(world.height * 0.34, 165, 220);
+      const xs = [world.width * 0.2, world.width * 0.5, world.width * 0.8];
+      const hoopY = clamp(world.height * 0.46, 250, 330);
 
-      hoops = currentProblem.options.map((value, i) => {
-        const x = xs[i];
-        const correct = value === currentProblem.answer;
-        const side = i === 0 ? 'left' : i === 1 ? 'center' : 'right';
-        return {
-          id: i,
-          x,
-          y: hoopY + (i === 1 ? -8 : 6),
-          rimR: clamp(world.width * 0.075, 28, 34),
-          value,
-          isCorrect: correct,
-          side,
-          boardW: 14,
-          boardH: 84
-        };
-      });
+      hoops = currentProblem.options.map((value, i) => ({
+        id: i,
+        x: xs[i],
+        y: hoopY + (i === 1 ? -4 : 8),
+        rimR: clamp(world.width * 0.08, 32, 40),
+        value,
+        isCorrect: value === currentProblem.answer,
+        side: i === 0 ? 'left' : i === 1 ? 'center' : 'right',
+        boardW: 16,
+        boardH: 88
+      }));
     }
 
     function resetRoundState() {
@@ -718,7 +710,7 @@
       resetRoundState();
       updateHUD();
 
-      hintText.textContent = 'Tarik bola dari bawah, lalu tembak ke ring jawaban yang benar.';
+      hintText.textContent = 'Sekarang ring lebih rendah dan power tembakan lebih kuat.';
       menuScreen.classList.add('hidden');
       overScreen.classList.add('hidden');
 
@@ -755,8 +747,8 @@
       for (let i = 0; i < count; i++) {
         particles.push({
           x, y,
-          vx: (Math.random() - 0.5) * 4.6,
-          vy: (Math.random() - 0.5) * 4.6,
+          vx: (Math.random() - 0.5) * 4.8,
+          vy: (Math.random() - 0.5) * 4.8,
           size: Math.random() * 4 + 2,
           life: 1,
           color
@@ -768,7 +760,7 @@
       popups.push({
         text, x, y, color,
         life: 1,
-        vy: -0.45
+        vy: -0.5
       });
     }
 
@@ -783,14 +775,15 @@
       comboChain++;
       combo = Math.min(5, 1 + Math.floor(comboChain / 2));
       bestCombo = Math.max(bestCombo, combo);
-
       if (perfect) perfectSwish++;
 
       addParticles(shot.x, shot.y, perfect ? '#fde047' : '#22c55e', perfect ? 24 : 18);
-      addPopup(perfect ? `SWISH! +${gain}` : `MASUK! +${gain}`, shot.x, shot.y - 18, perfect ? '#fde047' : '#bbf7d0');
-
+      addPopup(perfect ? `SWISH! +${gain}` : `MASUK! +${gain}`, shot.x, shot.y - 16, perfect ? '#fde047' : '#bbf7d0');
       scoreSound(perfect);
-      hintText.textContent = perfect ? 'Perfect swish! Tembakanmu sangat presisi.' : 'Masuk! Combo terus naik kalau jawaban berikutnya benar.';
+
+      hintText.textContent = perfect
+        ? 'Perfect swish! Tembakanmu pas sekali.'
+        : 'Masuk! Sekarang lebih enak kan dimainkan.';
       updateHUD();
 
       setTimeout(() => {
@@ -808,7 +801,7 @@
       addParticles(shot.x, shot.y, '#ef4444', 16);
       addPopup(reason, shot.x, shot.y - 14, '#fecaca');
       missSound();
-      hintText.textContent = 'Belum pas. Coba arahkan lebih tinggi dan ke tengah ring.';
+      hintText.textContent = 'Kalau masih kurang, tinggal tarik sedikit lebih panjang lagi.';
       updateHUD();
 
       if (lives <= 0) {
@@ -853,19 +846,17 @@
 
     function drawCourt() {
       ctx.save();
-
       ctx.fillStyle = 'rgba(255,255,255,0.10)';
-      for (let i = 0; i < 6; i++) {
+      for (let i = 0; i < 5; i++) {
         ctx.beginPath();
-        ctx.arc(world.width / 2, world.height + 80, 85 + i * 34, Math.PI, Math.PI * 2);
+        ctx.arc(world.width / 2, world.height + 40, 60 + i * 32, Math.PI, Math.PI * 2);
         ctx.lineWidth = i === 0 ? 3 : 1.2;
-        ctx.strokeStyle = i === 0 ? 'rgba(255,255,255,0.30)' : 'rgba(255,255,255,0.10)';
+        ctx.strokeStyle = i === 0 ? 'rgba(255,255,255,0.28)' : 'rgba(255,255,255,0.09)';
         ctx.stroke();
       }
 
       ctx.fillStyle = 'rgba(255,255,255,0.08)';
       ctx.fillRect(0, world.floorY, world.width, world.height - world.floorY);
-
       ctx.restore();
     }
 
@@ -877,57 +868,57 @@
 
       if (hoop.side === 'right') {
         ctx.fillStyle = 'rgba(0,0,0,0.16)';
-        ctx.fillRect(x - hoop.rimR - 28, y - 44, hoop.boardW, hoop.boardH);
+        ctx.fillRect(x - hoop.rimR - 32, y - 44, hoop.boardW, hoop.boardH);
 
         ctx.fillStyle = '#f8fbff';
-        ctx.strokeStyle = '#08121c';
+        ctx.strokeStyle = '#09121c';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.roundRect(x - hoop.rimR - 36, y - 48, 18, 86, 6);
+        ctx.roundRect(x - hoop.rimR - 40, y - 48, 18, 90, 6);
         ctx.fill();
         ctx.stroke();
       } else {
         ctx.fillStyle = 'rgba(0,0,0,0.16)';
-        ctx.fillRect(x + hoop.rimR + 14, y - 44, hoop.boardW, hoop.boardH);
+        ctx.fillRect(x + hoop.rimR + 16, y - 44, hoop.boardW, hoop.boardH);
 
         ctx.fillStyle = '#f8fbff';
-        ctx.strokeStyle = '#08121c';
+        ctx.strokeStyle = '#09121c';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.roundRect(x + hoop.rimR + 6, y - 48, 18, 86, 6);
+        ctx.roundRect(x + hoop.rimR + 8, y - 48, 18, 90, 6);
         ctx.fill();
         ctx.stroke();
       }
 
       ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 5;
+      ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(x - hoop.rimR, y);
       ctx.lineTo(x + hoop.rimR, y);
       ctx.stroke();
 
-      ctx.strokeStyle = 'rgba(255,255,255,0.72)';
+      ctx.strokeStyle = 'rgba(255,255,255,0.74)';
       ctx.lineWidth = 2;
       for (let i = -2; i <= 2; i++) {
         ctx.beginPath();
-        ctx.moveTo(x + i * 8, y + 1);
-        ctx.lineTo(x + i * 5, y + 28);
+        ctx.moveTo(x + i * 9, y + 1);
+        ctx.lineTo(x + i * 6, y + 30);
         ctx.stroke();
       }
 
       ctx.beginPath();
-      ctx.roundRect(x - 38, y - 92, 76, 38, 14);
+      ctx.roundRect(x - 40, y - 96, 80, 40, 14);
       ctx.fillStyle = hoop.isCorrect ? '#22c55e' : '#ffffff';
       ctx.fill();
-      ctx.strokeStyle = '#08121c';
+      ctx.strokeStyle = '#09121c';
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      ctx.fillStyle = hoop.isCorrect ? '#ffffff' : '#08121c';
-      ctx.font = '800 18px "Plus Jakarta Sans"';
+      ctx.fillStyle = hoop.isCorrect ? '#ffffff' : '#09121c';
+      ctx.font = '800 19px "Plus Jakarta Sans"';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText(String(hoop.value), x, y - 73);
+      ctx.fillText(String(hoop.value), x, y - 76);
 
       ctx.restore();
     }
@@ -936,7 +927,7 @@
       ctx.save();
 
       ctx.beginPath();
-      ctx.ellipse(launcher.x, launcher.y + 16, 22, 8, 0, 0, Math.PI * 2);
+      ctx.ellipse(launcher.x, launcher.y + 18, 24, 8, 0, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(0,0,0,0.15)';
       ctx.fill();
 
@@ -944,20 +935,20 @@
         ctx.beginPath();
         ctx.moveTo(launcher.x, launcher.y);
         ctx.lineTo(aim.currentX, aim.currentY);
-        ctx.strokeStyle = 'rgba(8,18,28,0.45)';
+        ctx.strokeStyle = 'rgba(9,18,28,0.42)';
         ctx.lineWidth = 4;
         ctx.setLineDash([8, 8]);
         ctx.stroke();
         ctx.setLineDash([]);
 
-        ctx.fillStyle = 'rgba(8,18,28,0.72)';
+        ctx.fillStyle = 'rgba(9,18,28,0.72)';
         ctx.beginPath();
-        ctx.roundRect(launcher.x - 50, launcher.y + 34, 100, 12, 999);
+        ctx.roundRect(launcher.x - 54, launcher.y + 34, 108, 12, 999);
         ctx.fill();
 
         ctx.fillStyle = aim.power > 0.7 ? '#22c55e' : aim.power > 0.4 ? '#facc15' : '#ef4444';
         ctx.beginPath();
-        ctx.roundRect(launcher.x - 50, launcher.y + 34, 100 * aim.power, 12, 999);
+        ctx.roundRect(launcher.x - 54, launcher.y + 34, 108 * aim.power, 12, 999);
         ctx.fill();
       }
 
@@ -970,10 +961,14 @@
 
       const dx = aim.startX - aim.currentX;
       const dy = aim.startY - aim.currentY;
-      const dist = clamp(Math.hypot(dx, dy), 10, 140);
-      const scale = dist / 140;
-      let vx = dx * 0.1 * (0.8 + scale * 0.55);
-      let vy = dy * 0.1 * (0.8 + scale * 0.55);
+      const dist = clamp(Math.hypot(dx, dy), 12, 155);
+      const scale = dist / 155;
+
+      let vx = dx * 0.13 * (1.0 + scale * 0.8);
+      let vy = dy * 0.13 * (1.0 + scale * 0.8);
+
+      vx = clamp(vx, -11.5, 11.5);
+      vy = clamp(vy, -17.5, -6.5);
 
       let px = launcher.x;
       let py = launcher.y;
@@ -997,7 +992,7 @@
       for (const t of shot.trail) {
         ctx.beginPath();
         ctx.arc(t.x, t.y, shot.r * 0.55, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${0.1 * t.a})`;
+        ctx.fillStyle = `rgba(255,255,255,${0.11 * t.a})`;
         ctx.fill();
       }
 
@@ -1022,7 +1017,7 @@
         ctx.globalAlpha = p.life;
         ctx.font = '800 22px "Plus Jakarta Sans"';
         ctx.textAlign = 'center';
-        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.strokeStyle = 'rgba(0,0,0,0.34)';
         ctx.lineWidth = 4;
         ctx.fillStyle = p.color;
         ctx.strokeText(p.text, p.x, p.y);
@@ -1044,11 +1039,11 @@
 
       if (shot.x < shot.r) {
         shot.x = shot.r;
-        shot.vx *= -0.7;
+        shot.vx *= -0.72;
       }
       if (shot.x > world.width - shot.r) {
         shot.x = world.width - shot.r;
-        shot.vx *= -0.7;
+        shot.vx *= -0.72;
       }
 
       for (const hoop of hoops) {
@@ -1058,55 +1053,55 @@
         const d1 = Math.hypot(shot.x - leftRim.x, shot.y - leftRim.y);
         const d2 = Math.hypot(shot.x - rightRim.x, shot.y - rightRim.y);
 
-        if (d1 < shot.r + 6) {
+        if (d1 < shot.r + 7) {
           const a = Math.atan2(shot.y - leftRim.y, shot.x - leftRim.x);
-          shot.x = leftRim.x + Math.cos(a) * (shot.r + 6);
-          shot.y = leftRim.y + Math.sin(a) * (shot.r + 6);
+          shot.x = leftRim.x + Math.cos(a) * (shot.r + 7);
+          shot.y = leftRim.y + Math.sin(a) * (shot.r + 7);
           shot.vx = Math.cos(a) * 3.2;
           shot.vy = Math.sin(a) * 3.2;
         }
 
-        if (d2 < shot.r + 6) {
+        if (d2 < shot.r + 7) {
           const a = Math.atan2(shot.y - rightRim.y, shot.x - rightRim.x);
-          shot.x = rightRim.x + Math.cos(a) * (shot.r + 6);
-          shot.y = rightRim.y + Math.sin(a) * (shot.r + 6);
+          shot.x = rightRim.x + Math.cos(a) * (shot.r + 7);
+          shot.y = rightRim.y + Math.sin(a) * (shot.r + 7);
           shot.vx = Math.cos(a) * 3.2;
           shot.vy = Math.sin(a) * 3.2;
         }
 
-        const boardLeftX = hoop.side === 'right'
-          ? hoop.x - hoop.rimR - 36
-          : hoop.x + hoop.rimR + 6;
-        const boardRightX = boardLeftX + 18;
+        const boardLeft = hoop.side === 'right'
+          ? hoop.x - hoop.rimR - 40
+          : hoop.x + hoop.rimR + 8;
+        const boardRight = boardLeft + 18;
         const boardTop = hoop.y - 48;
-        const boardBottom = hoop.y + 38;
+        const boardBottom = hoop.y + 42;
 
         if (
-          shot.x + shot.r > boardLeftX &&
-          shot.x - shot.r < boardRightX &&
+          shot.x + shot.r > boardLeft &&
+          shot.x - shot.r < boardRight &&
           shot.y > boardTop &&
           shot.y < boardBottom
         ) {
           if (hoop.side === 'right') {
-            shot.x = boardRightX + shot.r;
-            shot.vx = Math.abs(shot.vx) * 0.76;
+            shot.x = boardRight + shot.r;
+            shot.vx = Math.abs(shot.vx) * 0.78;
           } else {
-            shot.x = boardLeftX - shot.r;
-            shot.vx = -Math.abs(shot.vx) * 0.76;
+            shot.x = boardLeft - shot.r;
+            shot.vx = -Math.abs(shot.vx) * 0.78;
           }
         }
 
         const goal =
           shot.vy > 0 &&
           shot.y > hoop.y - 8 &&
-          shot.y < hoop.y + 28 &&
-          shot.x > hoop.x - hoop.rimR + 6 &&
-          shot.x < hoop.x + hoop.rimR - 6;
+          shot.y < hoop.y + 32 &&
+          shot.x > hoop.x - hoop.rimR + 7 &&
+          shot.x < hoop.x + hoop.rimR - 7;
 
         if (goal && !shot.scored) {
           shot.scored = true;
           if (hoop.isCorrect) {
-            const perfect = Math.abs(shot.x - hoop.x) < hoop.rimR * 0.3 && Math.abs(shot.vx) < 1.8;
+            const perfect = Math.abs(shot.x - hoop.x) < hoop.rimR * 0.34 && Math.abs(shot.vx) < 2.1;
             registerCorrect(perfect);
           } else {
             registerWrong('SALAH RING!');
@@ -1168,7 +1163,6 @@
 
       updateWorld(dt);
       draw();
-
       animationId = requestAnimationFrame(loop);
     }
 
@@ -1205,20 +1199,20 @@
       aim.currentY = p.y;
 
       const dist = Math.hypot(aim.startX - aim.currentX, aim.startY - aim.currentY);
-      aim.power = clamp(dist / 140, 0, 1);
+      aim.power = clamp(dist / 155, 0, 1);
     }
 
     function shootBall() {
       const dx = aim.startX - aim.currentX;
       const dy = aim.startY - aim.currentY;
-      const dist = clamp(Math.hypot(dx, dy), 14, 140);
-      const scale = dist / 140;
+      const dist = clamp(Math.hypot(dx, dy), 14, 155);
+      const scale = dist / 155;
 
-      let vx = dx * 0.1 * (0.82 + scale * 0.5);
-      let vy = dy * 0.1 * (0.82 + scale * 0.5);
+      let vx = dx * 0.13 * (1.0 + scale * 0.8);
+      let vy = dy * 0.13 * (1.0 + scale * 0.8);
 
-      vx = clamp(vx, -8.5, 8.5);
-      vy = clamp(vy, -13.5, -5.5);
+      vx = clamp(vx, -11.5, 11.5);
+      vy = clamp(vy, -17.5, -6.5);
 
       shot.active = true;
       shot.scored = false;
@@ -1229,14 +1223,14 @@
       shot.trail = [];
 
       beep(300, 0.08, 'square', 0.05);
-      hintText.textContent = 'Tembakan dilepas. Arahkan ke mulut ring, bukan ke papan.';
+      hintText.textContent = 'Power sudah dinaikkan. Tarik sedang pun sekarang harusnya bisa sampai.';
     }
 
     function onEnd() {
       if (!pointerPressed || !aiming) return;
 
       pointerPressed = false;
-      if (aim.power > 0.08) shootBall();
+      if (aim.power > 0.06) shootBall();
       aiming = false;
     }
 
