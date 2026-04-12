@@ -1,877 +1,1319 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>BOLA PINTAR - Basket Matematika</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>BOLA PINTAR - Basket Matematika Pro</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Poppins:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --orange: #E65100;
-            --blue: #1565C0;
-            --yellow: #FFD600;
-            --white: #FFFFFF;
-            --dark: #000000;
-            --red: #EF4444;
-            --green: #22C55E;
-            --panel: #E3F2FD;
-            --border: 4px solid #000000;
-            --shadow: 6px 6px 0px #000000;
-            --shadow-sm: 4px 4px 0px #000000;
-        }
+  <style>
+    :root {
+      --orange: #ef6c00;
+      --orange-dark: #c75a00;
+      --blue: #0f4c81;
+      --blue-dark: #0b2f52;
+      --sky: #dff3ff;
+      --yellow: #ffd54f;
+      --green: #22c55e;
+      --red: #ef4444;
+      --white: #ffffff;
+      --ink: #091018;
+      --panel: rgba(255,255,255,0.92);
+      --shadow: 0 14px 30px rgba(0,0,0,0.18);
+      --border: 3px solid #071018;
+      --radius: 22px;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
-        body {
-            background-color: var(--blue);
-            font-family: 'Poppins', sans-serif;
-            color: var(--dark);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
-        }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top, #4fc3f7 0%, #1565c0 35%, #0a2340 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+    }
 
-        #app {
-            width: 100%;
-            max-width: 460px;
-            height: min(92vh, 860px);
-            background: var(--panel);
-            border: var(--border);
-            box-shadow: 12px 12px 0px var(--dark);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            border-radius: 26px;
-        }
+    .app {
+      width: 100%;
+      max-width: 500px;
+      height: min(94dvh, 920px);
+      display: grid;
+      grid-template-rows: auto 1fr;
+      background: linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.03));
+      border: var(--border);
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.3);
+      position: relative;
+    }
 
-        header {
-            padding: 10px;
-            background: var(--orange);
-            border-bottom: var(--border);
-            display: grid;
-            grid-template-columns: 1fr 1.3fr 1fr;
-            align-items: center;
-            gap: 6px;
-            z-index: 10;
-        }
+    header {
+      z-index: 20;
+      padding: max(10px, env(safe-area-inset-top)) 10px 10px;
+      background: linear-gradient(180deg, #ff8a1f 0%, #ef6c00 100%);
+      border-bottom: var(--border);
+      display: grid;
+      grid-template-columns: 86px 1fr 86px;
+      gap: 8px;
+      align-items: center;
+    }
 
-        .back-btn {
-            background: var(--white);
-            color: var(--dark);
-            text-decoration: none;
-            padding: 7px 10px;
-            border: 2px solid var(--dark);
-            box-shadow: 3px 3px 0px var(--dark);
-            font-size: 0.72rem;
-            font-weight: 900;
-            width: fit-content;
-            border-radius: 12px;
-        }
+    .mini-card {
+      background: rgba(255,255,255,0.93);
+      border: 2px solid #091018;
+      border-radius: 16px;
+      padding: 8px 6px;
+      text-align: center;
+      box-shadow: 0 4px 0 #091018;
+      min-height: 54px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
 
-        .stats {
-            text-align: center;
-            font-family: 'Anton', sans-serif;
-            color: var(--white);
-            font-size: 1.05rem;
-            text-shadow: 2px 2px 0px var(--dark);
-            line-height: 1.1;
-        }
+    .mini-label {
+      font-size: 0.7rem;
+      font-weight: 800;
+      opacity: 0.72;
+      line-height: 1;
+    }
 
-        .lives {
-            text-align: right;
-            font-size: 1.15rem;
-            color: white;
-            text-shadow: 2px 2px 0px var(--dark);
-        }
+    .mini-value {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-top: 4px;
+      line-height: 1;
+    }
 
-        #game-area {
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-            background:
-                linear-gradient(rgba(0,0,0,0.08) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.08) 1px, transparent 1px),
-                linear-gradient(to bottom, #dff3ff 0%, #bbdefb 100%);
-            background-size: 40px 40px, 40px 40px, 100% 100%;
-            touch-action: none;
-        }
+    .center-panel {
+      text-align: center;
+      color: white;
+      text-shadow: 0 2px 0 rgba(0,0,0,0.25);
+    }
 
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
+    .game-title {
+      font-family: 'Anton', sans-serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      letter-spacing: 0.02em;
+    }
 
-        #question-overlay {
-            position: absolute;
-            top: 14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--yellow);
-            padding: 10px 20px;
-            border: var(--border);
-            box-shadow: var(--shadow);
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(1.3rem, 5vw, 2rem);
-            white-space: nowrap;
-            z-index: 5;
-            border-radius: 18px;
-        }
+    .subline {
+      font-size: 0.8rem;
+      font-weight: 700;
+      opacity: 0.95;
+      margin-top: 4px;
+    }
 
-        #helper-overlay {
-            position: absolute;
-            top: 86px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(255,255,255,0.88);
-            padding: 8px 12px;
-            border: 3px solid #000;
-            box-shadow: var(--shadow-sm);
-            font-size: 0.8rem;
-            font-weight: 800;
-            z-index: 5;
-            border-radius: 14px;
-            text-align: center;
-        }
+    .game-wrap {
+      position: relative;
+      overflow: hidden;
+      min-height: 0;
+    }
 
-        .screen {
-            position: absolute;
-            inset: 0;
-            background: rgba(21, 101, 192, 0.92);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            z-index: 100;
-        }
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0) 30%),
+        linear-gradient(to bottom, #dff3ff 0%, #bce6ff 48%, #f6c56d 48%, #d58d3c 100%);
+    }
 
-        .hidden {
-            display: none !important;
-        }
+    .hud-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 8;
+    }
 
-        h1 {
-            font-family: 'Anton', sans-serif;
-            font-size: clamp(2.8rem, 10vw, 4rem);
-            color: var(--orange);
-            -webkit-text-stroke: 2px var(--white);
-            margin-bottom: 10px;
-            line-height: 1;
-        }
+    .question-box {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      min-width: min(88%, 360px);
+      background: rgba(255,255,255,0.96);
+      color: #091018;
+      border: var(--border);
+      border-radius: 18px;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      padding: 10px 16px;
+      text-align: center;
+    }
 
-        .btn {
-            background: var(--yellow);
-            color: var(--dark);
-            padding: 14px 26px;
-            font-size: 1.2rem;
-            font-weight: 900;
-            border: var(--border);
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            margin-top: 20px;
-            text-transform: uppercase;
-            border-radius: 18px;
-        }
+    .question-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      opacity: 0.62;
+    }
 
-        .btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: 2px 2px 0px var(--dark);
-        }
+    .question-text {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(1.4rem, 5vw, 2.25rem);
+      line-height: 1;
+      margin-top: 4px;
+    }
 
-        .result-score {
-            font-size: 4rem;
-            font-family: 'Anton', sans-serif;
-            margin: 20px 0;
-            color: var(--yellow);
-        }
+    .top-right-stack {
+      position: absolute;
+      right: 12px;
+      top: 88px;
+      display: grid;
+      gap: 8px;
+      width: min(145px, 34vw);
+    }
 
-        .mode-wrap {
-            margin-top: 16px;
-            width: 100%;
-            max-width: 320px;
-            display: grid;
-            gap: 10px;
-        }
+    .float-chip {
+      background: rgba(9,16,24,0.86);
+      color: white;
+      border-radius: 14px;
+      padding: 8px 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+      border: 1px solid rgba(255,255,255,0.14);
+      backdrop-filter: blur(6px);
+    }
 
-        .mode-btn {
-            background: white;
-            color: black;
-            border: var(--border);
-            box-shadow: var(--shadow-sm);
-            padding: 12px;
-            border-radius: 16px;
-            font-weight: 900;
-            cursor: pointer;
-        }
+    .float-chip .chip-label {
+      font-size: 0.65rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      opacity: 0.7;
+    }
 
-        .mode-btn.active {
-            background: var(--yellow);
-        }
+    .float-chip .chip-value {
+      font-size: 1rem;
+      font-weight: 800;
+      margin-top: 3px;
+    }
 
-        @media (max-width: 420px) {
-            header {
-                grid-template-columns: 1fr 1fr 1fr;
-            }
+    .streak-bar {
+      height: 8px;
+      margin-top: 8px;
+      background: rgba(255,255,255,0.14);
+      border-radius: 999px;
+      overflow: hidden;
+    }
 
-            .stats {
-                font-size: 0.95rem;
-            }
+    .streak-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #facc15, #fb923c);
+      border-radius: 999px;
+      transition: width 180ms linear;
+    }
 
-            .back-btn {
-                font-size: 0.65rem;
-                padding: 6px 8px;
-            }
+    .bottom-hint {
+      position: absolute;
+      left: 50%;
+      bottom: calc(14px + env(safe-area-inset-bottom));
+      transform: translateX(-50%);
+      background: rgba(9,16,24,0.82);
+      color: white;
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+      text-align: center;
+      max-width: calc(100% - 24px);
+    }
 
-            .lives {
-                font-size: 1rem;
-            }
+    .screen {
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(8,17,27,0.7), rgba(8,17,27,0.84));
+      backdrop-filter: blur(6px);
+    }
 
-            #helper-overlay {
-                top: 82px;
-                width: calc(100% - 28px);
-                white-space: normal;
-            }
-        }
-    </style>
+    .hidden {
+      display: none !important;
+    }
+
+    .panel {
+      width: min(100%, 390px);
+      background: rgba(255,255,255,0.96);
+      color: #091018;
+      border-radius: 28px;
+      padding: 22px 20px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.26);
+      border: var(--border);
+      text-align: center;
+    }
+
+    .panel h1 {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(2.2rem, 8vw, 3.6rem);
+      line-height: 0.95;
+      color: var(--orange);
+      margin-bottom: 10px;
+    }
+
+    .panel p {
+      font-size: 0.98rem;
+      line-height: 1.45;
+      color: rgba(9,16,24,0.8);
+    }
+
+    .mode-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .mode-btn, .main-btn, .sub-btn {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 16px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      border: var(--border);
+      transition: transform 0.08s ease, filter 0.18s ease;
+    }
+
+    .mode-btn:active, .main-btn:active, .sub-btn:active {
+      transform: translateY(2px) scale(0.995);
+    }
+
+    .mode-btn {
+      background: white;
+      color: #091018;
+    }
+
+    .mode-btn.active {
+      background: linear-gradient(180deg, #ffe082, #ffca28);
+    }
+
+    .main-btn {
+      margin-top: 18px;
+      background: linear-gradient(180deg, #ffb74d, #fb8c00);
+      color: #091018;
+      font-size: 1rem;
+    }
+
+    .sub-btn {
+      margin-top: 10px;
+      background: #ffffff;
+      color: #091018;
+      font-size: 0.96rem;
+    }
+
+    .final-score {
+      font-family: 'Anton', sans-serif;
+      font-size: clamp(3rem, 12vw, 4.4rem);
+      line-height: 1;
+      color: #1565c0;
+      margin: 12px 0 4px;
+    }
+
+    .result-badges {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .badge {
+      background: #fff5d6;
+      border: 2px solid #091018;
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    @media (max-width: 420px) {
+      header {
+        grid-template-columns: 74px 1fr 74px;
+      }
+
+      .mini-value {
+        font-size: 0.92rem;
+      }
+
+      .game-title {
+        font-size: 1.35rem;
+      }
+
+      .subline {
+        font-size: 0.72rem;
+      }
+
+      .top-right-stack {
+        right: 10px;
+        width: 132px;
+      }
+
+      .bottom-hint {
+        font-size: 0.72rem;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="app">
-        <header>
-            <a href="/#games" class="back-btn">⬅ KEMBALI</a>
-            <div class="stats">SKOR: <span id="score-val">0</span><br>HI: <span id="hi-val">0</span></div>
-            <div class="lives" id="lives-val">❤️❤️❤️</div>
-        </header>
+  <div class="app">
+    <header>
+      <div class="mini-card">
+        <div class="mini-label">SKOR</div>
+        <div class="mini-value" id="scoreVal">0</div>
+      </div>
 
-        <div id="game-area">
-            <div id="question-overlay" class="hidden">5 + 5 = ?</div>
-            <div id="helper-overlay" class="hidden">Tap bola yang benar atau tarik peluncur lalu lepas.</div>
-            <canvas id="gameCanvas"></canvas>
+      <div class="center-panel">
+        <div class="game-title">BOLA PINTAR</div>
+        <div class="subline">Basket Matematika Pro</div>
+      </div>
 
-            <div id="screen-menu" class="screen">
-                <h1>BOLA PINTAR</h1>
-                <p>Klik atau tembak bola dengan jawaban yang benar.</p>
-                <div style="font-size: 3.2rem; margin: 18px 0;">🏀</div>
+      <div class="mini-card">
+        <div class="mini-label">NYAWA</div>
+        <div class="mini-value" id="livesVal">❤️❤️❤️</div>
+      </div>
+    </header>
 
-                <div class="mode-wrap">
-                    <button class="mode-btn active" data-mode="MIX">MODE CAMPURAN</button>
-                    <button class="mode-btn" data-mode="ADD">PENJUMLAHAN</button>
-                    <button class="mode-btn" data-mode="SUB">PENGURANGAN</button>
-                    <button class="mode-btn" data-mode="MUL">PERKALIAN</button>
-                </div>
+    <div class="game-wrap">
+      <canvas id="gameCanvas"></canvas>
 
-                <button class="btn" onclick="startGame()">MAIN SEKARANG</button>
-            </div>
-
-            <div id="screen-over" class="screen hidden">
-                <h1>GAME OVER</h1>
-                <p>Skor Akhir Kamu:</p>
-                <div class="result-score" id="final-score">0</div>
-                <button class="btn" onclick="startGame()">COBA LAGI</button>
-            </div>
+      <div class="hud-layer">
+        <div class="question-box">
+          <div class="question-label">SOAL SAAT INI</div>
+          <div class="question-text" id="questionText">8 + 7 = ?</div>
         </div>
+
+        <div class="top-right-stack">
+          <div class="float-chip">
+            <div class="chip-label">COMBO</div>
+            <div class="chip-value" id="comboVal">x1</div>
+            <div class="streak-bar"><div class="streak-fill" id="streakFill"></div></div>
+          </div>
+
+          <div class="float-chip">
+            <div class="chip-label">WAKTU</div>
+            <div class="chip-value" id="timerVal">12.0s</div>
+          </div>
+
+          <div class="float-chip">
+            <div class="chip-label">HIGH SCORE</div>
+            <div class="chip-value" id="hiVal">0</div>
+          </div>
+        </div>
+
+        <div class="bottom-hint" id="hintText">
+          Tarik bola di bawah, atur arah dan tenaga, lalu lepaskan ke ring jawaban yang benar.
+        </div>
+      </div>
+
+      <div class="screen" id="menuScreen">
+        <div class="panel">
+          <h1>BOLA PINTAR</h1>
+          <p>
+            Tembakkan bola ke ring dengan jawaban yang benar. Dapatkan swish, bangun combo, dan
+            kalahkan skor tertinggimu.
+          </p>
+
+          <div class="mode-grid">
+            <button class="mode-btn active" data-mode="mix">Mode Campuran</button>
+            <button class="mode-btn" data-mode="add">Penjumlahan</button>
+            <button class="mode-btn" data-mode="sub">Pengurangan</button>
+            <button class="mode-btn" data-mode="mul">Perkalian</button>
+          </div>
+
+          <button class="main-btn" id="startBtn">Main Sekarang</button>
+          <button class="sub-btn" id="backBtn" onclick="location.href='/#games'">Kembali ke Portal</button>
+        </div>
+      </div>
+
+      <div class="screen hidden" id="gameOverScreen">
+        <div class="panel">
+          <h1>Game Over</h1>
+          <p>Skor akhir kamu:</p>
+          <div class="final-score" id="finalScoreVal">0</div>
+
+          <div class="result-badges">
+            <div class="badge" id="resultCombo">Combo Tertinggi: x1</div>
+            <div class="badge" id="resultPerfect">Perfect Swish: 0</div>
+          </div>
+
+          <button class="main-btn" id="restartBtn">Main Lagi</button>
+          <button class="sub-btn" id="menuBtn">Pilih Mode</button>
+        </div>
+      </div>
     </div>
-
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const questionOverlay = document.getElementById('question-overlay');
-        const helperOverlay = document.getElementById('helper-overlay');
-        const scoreVal = document.getElementById('score-val');
-        const hiVal = document.getElementById('hi-val');
-        const livesVal = document.getElementById('lives-val');
-        const menuScreen = document.getElementById('screen-menu');
-        const overScreen = document.getElementById('screen-over');
-        const finalScoreEl = document.getElementById('final-score');
-        const modeButtons = document.querySelectorAll('.mode-btn');
-
-        let score = 0;
-        let lives = 3;
-        let gameActive = false;
-        let balls = [];
-        let shots = [];
-        let currentProblem = null;
-        let lastSpawn = 0;
-        let spawnRate = 1500;
-        let speedMultiplier = 1;
-        let animationId = null;
-        let feedbackFlash = null;
-        let selectedMode = 'MIX';
-
-        const launcher = {
-            x: 0,
-            y: 0,
-            radius: 28
-        };
-
-        const aim = {
-            active: false,
-            startX: 0,
-            startY: 0,
-            currentX: 0,
-            currentY: 0
-        };
-
-        let audioCtx = null;
-        function ensureAudio() {
-            try {
-                if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-            } catch (e) {}
-        }
-
-        function playSound(freq, type, duration) {
-            try {
-                ensureAudio();
-                if (!audioCtx) return;
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.value = freq;
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch (e) {}
-        }
-
-        function resize() {
-            const rect = canvas.parentElement.getBoundingClientRect();
-            canvas.width = rect.width;
-            canvas.height = rect.height;
-            launcher.x = canvas.width / 2;
-            launcher.y = canvas.height - 42;
-        }
-
-        window.addEventListener('resize', resize);
-        resize();
-
-        function getHighScore() {
-            try {
-                return parseInt(localStorage.getItem('bolaPintarHigh') || '0', 10);
-            } catch (e) {
-                return 0;
-            }
-        }
-
-        function setHighScore(val) {
-            try {
-                localStorage.setItem('bolaPintarHigh', String(val));
-            } catch (e) {}
-        }
-
-        function updateUI() {
-            scoreVal.innerText = score;
-            hiVal.innerText = getHighScore();
-            livesVal.innerText = '❤️'.repeat(Math.max(0, lives)) || '💔';
-        }
-
-        function randomInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1)) + min;
-        }
-
-        function generateProblem() {
-            let type;
-
-            if (selectedMode === 'ADD') type = 0;
-            else if (selectedMode === 'SUB') type = 1;
-            else if (selectedMode === 'MUL') type = 2;
-            else type = randomInt(0, 2);
-
-            let a, b, q, ans;
-
-            if (type === 0) {
-                a = randomInt(1, 20);
-                b = randomInt(1, 20);
-                q = `${a} + ${b}`;
-                ans = a + b;
-            } else if (type === 1) {
-                a = randomInt(10, 30);
-                b = randomInt(1, a - 1);
-                q = `${a} - ${b}`;
-                ans = a - b;
-            } else {
-                a = randomInt(1, 10);
-                b = randomInt(1, 10);
-                q = `${a} × ${b}`;
-                ans = a * b;
-            }
-
-            return { q, a: ans };
-        }
-
-        function makeWrongOptions(correct) {
-            const set = new Set([correct]);
-            while (set.size < 3) {
-                let delta = randomInt(1, 10);
-                let val = Math.random() > 0.5 ? correct + delta : correct - delta;
-                if (val < 0) val = Math.abs(val) + 2;
-                set.add(val);
-            }
-            return [...set].sort(() => Math.random() - 0.5);
-        }
-
-        class Ball {
-            constructor(value, isCorrect) {
-                this.radius = 34;
-                this.x = Math.random() * (canvas.width - this.radius * 2) + this.radius;
-                this.y = -this.radius - randomInt(0, 80);
-                this.value = value;
-                this.isCorrect = isCorrect;
-                this.speed = (Math.random() * 1 + 1.5) * speedMultiplier;
-                this.angle = 0;
-                this.rotation = Math.random() * 0.05 - 0.025;
-                this.vx = Math.random() * 1.2 - 0.6;
-                this.markedForRemoval = false;
-            }
-
-            update() {
-                this.y += this.speed;
-                this.x += this.vx;
-                this.angle += this.rotation;
-
-                if (this.x < this.radius || this.x > canvas.width - this.radius) {
-                    this.vx *= -1;
-                }
-            }
-
-            draw() {
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.angle);
-
-                ctx.beginPath();
-                ctx.arc(4, 4, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = 'rgba(0,0,0,0.25)';
-                ctx.fill();
-
-                ctx.beginPath();
-                ctx.arc(0, 0, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#E65100';
-                ctx.fill();
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = '#000';
-                ctx.stroke();
-
-                ctx.beginPath();
-                ctx.moveTo(-this.radius, 0);
-                ctx.lineTo(this.radius, 0);
-                ctx.moveTo(0, -this.radius);
-                ctx.lineTo(0, this.radius);
-                ctx.stroke();
-
-                ctx.rotate(-this.angle);
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 24px Poppins';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 4;
-                ctx.strokeText(this.value, 0, 0);
-                ctx.fillText(this.value, 0, 0);
-                ctx.restore();
-            }
-
-            containsPoint(px, py) {
-                const dist = Math.hypot(px - this.x, py - this.y);
-                return dist <= this.radius + 8;
-            }
-        }
-
-        class Shot {
-            constructor(x, y, vx, vy) {
-                this.x = x;
-                this.y = y;
-                this.radius = 10;
-                this.vx = vx;
-                this.vy = vy;
-                this.gravity = 0.18;
-                this.active = true;
-            }
-
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.vy += this.gravity;
-
-                if (this.x < -40 || this.x > canvas.width + 40 || this.y < -40 || this.y > canvas.height + 40) {
-                    this.active = false;
-                }
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fillStyle = '#FFD600';
-                ctx.fill();
-                ctx.lineWidth = 3;
-                ctx.strokeStyle = '#000';
-                ctx.stroke();
-            }
-        }
-
-        function setFeedback(type) {
-            feedbackFlash = {
-                color: type === 'good' ? 'rgba(34,197,94,0.22)' : 'rgba(239,68,68,0.22)',
-                until: Date.now() + 180
-            };
-        }
-
-        function loadNewProblem() {
-            currentProblem = generateProblem();
-            questionOverlay.innerText = `${currentProblem.q} = ?`;
-            balls = [];
-            spawnInitialBalls();
-        }
-
-        function spawnInitialBalls() {
-            const values = makeWrongOptions(currentProblem.a);
-            values.forEach(v => balls.push(new Ball(v, v === currentProblem.a)));
-        }
-
-        function spawnBalls() {
-            const now = Date.now();
-            if (balls.length >= 6) return;
-
-            if (now - lastSpawn > spawnRate) {
-                const missingCorrect = !balls.some(b => b.isCorrect);
-                let newValue;
-                let isCorrect = false;
-
-                if (missingCorrect || Math.random() < 0.35) {
-                    newValue = currentProblem.a;
-                    isCorrect = true;
-                } else {
-                    const delta = randomInt(1, 10);
-                    newValue = Math.random() > 0.5 ? currentProblem.a + delta : currentProblem.a - delta;
-                    if (newValue < 0) newValue = Math.abs(newValue) + 2;
-                }
-
-                balls.push(new Ball(newValue, isCorrect));
-                lastSpawn = now;
-
-                if (spawnRate > 850) spawnRate -= 18;
-                speedMultiplier = Math.min(2.6, speedMultiplier + 0.015);
-            }
-        }
-
-        function resetRunState() {
-            score = 0;
-            lives = 3;
-            balls = [];
-            shots = [];
-            currentProblem = null;
-            lastSpawn = 0;
-            spawnRate = 1500;
-            speedMultiplier = 1;
-            feedbackFlash = null;
-            aim.active = false;
-        }
-
-        function startGame() {
-            ensureAudio();
-
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-                animationId = null;
-            }
-
-            resetRunState();
-            gameActive = true;
-            updateUI();
-
-            questionOverlay.classList.remove('hidden');
-            helperOverlay.classList.remove('hidden');
-            menuScreen.classList.add('hidden');
-            overScreen.classList.add('hidden');
-
-            loadNewProblem();
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        function nextQuestion() {
-            balls = [];
-            shots = [];
-            loadNewProblem();
-        }
-
-        function handleCorrect() {
-            score += 10;
-            playSound(620, 'sine', 0.08);
-            setTimeout(() => playSound(840, 'sine', 0.1), 60);
-            setFeedback('good');
-            updateUI();
-            nextQuestion();
-        }
-
-        function handleWrong(removeBallIndex = null) {
-            lives--;
-            playSound(120, 'square', 0.22);
-            setFeedback('bad');
-
-            if (removeBallIndex !== null) {
-                balls.splice(removeBallIndex, 1);
-            }
-
-            updateUI();
-
-            if (lives <= 0) {
-                gameOver();
-            }
-        }
-
-        function gameOver() {
-            gameActive = false;
-            if (score > getHighScore()) {
-                setHighScore(score);
-            }
-            updateUI();
-            finalScoreEl.innerText = score;
-            overScreen.classList.remove('hidden');
-            questionOverlay.classList.add('hidden');
-            helperOverlay.classList.add('hidden');
-        }
-
-        function drawCourt() {
-            const w = canvas.width;
-            const h = canvas.height;
-
-            ctx.save();
-            ctx.strokeStyle = 'rgba(0,0,0,0.18)';
-            ctx.lineWidth = 4;
-
-            ctx.beginPath();
-            ctx.arc(w / 2, h + 70, 140, Math.PI, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(w / 2, h - 90, 60, 0, Math.PI, true);
-            ctx.stroke();
-
-            ctx.restore();
-        }
-
-        function drawLauncher() {
-            ctx.save();
-
-            if (aim.active) {
-                ctx.beginPath();
-                ctx.moveTo(launcher.x, launcher.y);
-                ctx.lineTo(aim.currentX, aim.currentY);
-                ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-                ctx.lineWidth = 4;
-                ctx.setLineDash([8, 8]);
-                ctx.stroke();
-                ctx.setLineDash([]);
-            }
-
-            ctx.beginPath();
-            ctx.arc(launcher.x, launcher.y, launcher.radius, 0, Math.PI * 2);
-            ctx.fillStyle = '#FFD600';
-            ctx.fill();
-            ctx.lineWidth = 4;
-            ctx.strokeStyle = '#000';
-            ctx.stroke();
-
-            ctx.font = 'bold 20px Poppins';
-            ctx.fillStyle = '#000';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('🏀', launcher.x, launcher.y + 1);
-
-            ctx.restore();
-        }
-
-        function drawFeedback() {
-            if (!feedbackFlash) return;
-            if (Date.now() > feedbackFlash.until) {
-                feedbackFlash = null;
-                return;
-            }
-            ctx.fillStyle = feedbackFlash.color;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-        }
-
-        function gameLoop() {
-            if (!gameActive) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            drawCourt();
-            spawnBalls();
-
-            for (let i = balls.length - 1; i >= 0; i--) {
-                const b = balls[i];
-                b.update();
-                b.draw();
-
-                if (b.y > canvas.height + b.radius) {
-                    if (b.isCorrect) {
-                        handleWrong();
-                        if (!gameActive) return;
-                        nextQuestion();
-                        break;
-                    } else {
-                        balls.splice(i, 1);
-                    }
-                }
-            }
-
-            for (let i = shots.length - 1; i >= 0; i--) {
-                const s = shots[i];
-                s.update();
-                s.draw();
-
-                for (let j = balls.length - 1; j >= 0; j--) {
-                    const b = balls[j];
-                    const dist = Math.hypot(s.x - b.x, s.y - b.y);
-                    if (dist < s.radius + b.radius) {
-                        s.active = false;
-                        if (b.isCorrect) {
-                            handleCorrect();
-                        } else {
-                            handleWrong(j);
-                        }
-                        break;
-                    }
-                }
-
-                if (!s.active) {
-                    shots.splice(i, 1);
-                }
-            }
-
-            drawLauncher();
-            drawFeedback();
-
-            animationId = requestAnimationFrame(gameLoop);
-        }
-
-        function getPointerPos(e) {
-            const rect = canvas.getBoundingClientRect();
-            const clientX = e.clientX !== undefined ? e.clientX : e.touches[0].clientX;
-            const clientY = e.clientY !== undefined ? e.clientY : e.touches[0].clientY;
-            return {
-                x: clientX - rect.left,
-                y: clientY - rect.top
-            };
-        }
-
-        function pointerDown(e) {
-            if (!gameActive) return;
-            const p = getPointerPos(e);
-
-            for (let i = balls.length - 1; i >= 0; i--) {
-                if (balls[i].containsPoint(p.x, p.y)) {
-                    if (balls[i].isCorrect) {
-                        handleCorrect();
-                    } else {
-                        handleWrong(i);
-                    }
-                    return;
-                }
-            }
-
-            const launcherDist = Math.hypot(p.x - launcher.x, p.y - launcher.y);
-            if (launcherDist <= launcher.radius + 18) {
-                aim.active = true;
-                aim.startX = launcher.x;
-                aim.startY = launcher.y;
-                aim.currentX = p.x;
-                aim.currentY = p.y;
-            }
-        }
-
-        function pointerMove(e) {
-            if (!gameActive || !aim.active) return;
-            const p = getPointerPos(e);
-            aim.currentX = p.x;
-            aim.currentY = p.y;
-        }
-
-        function pointerUp(e) {
-            if (!gameActive || !aim.active) return;
-
-            const p = getPointerPos(e);
-            aim.currentX = p.x;
-            aim.currentY = p.y;
-
-            let dx = aim.startX - aim.currentX;
-            let dy = aim.startY - aim.currentY;
-
-            dx = Math.max(-120, Math.min(120, dx));
-            dy = Math.max(-160, Math.min(160, dy));
-
-            const power = Math.max(0.6, Math.min(1.5, Math.hypot(dx, dy) / 90));
-            const vx = dx * 0.08 * power;
-            const vy = dy * 0.08 * power;
-
-            if (Math.abs(dx) > 8 || Math.abs(dy) > 8) {
-                shots.push(new Shot(launcher.x, launcher.y, vx, vy));
-                playSound(300, 'square', 0.08);
-            }
-
-            aim.active = false;
-        }
-
-        modeButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                modeButtons.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                selectedMode = btn.dataset.mode;
-            });
+  </div>
+
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const questionText = document.getElementById('questionText');
+    const scoreVal = document.getElementById('scoreVal');
+    const livesVal = document.getElementById('livesVal');
+    const comboVal = document.getElementById('comboVal');
+    const streakFill = document.getElementById('streakFill');
+    const timerVal = document.getElementById('timerVal');
+    const hiVal = document.getElementById('hiVal');
+    const hintText = document.getElementById('hintText');
+
+    const menuScreen = document.getElementById('menuScreen');
+    const gameOverScreen = document.getElementById('gameOverScreen');
+    const finalScoreVal = document.getElementById('finalScoreVal');
+    const resultCombo = document.getElementById('resultCombo');
+    const resultPerfect = document.getElementById('resultPerfect');
+
+    const modeButtons = document.querySelectorAll('.mode-btn');
+    const startBtn = document.getElementById('startBtn');
+    const restartBtn = document.getElementById('restartBtn');
+    const menuBtn = document.getElementById('menuBtn');
+
+    let selectedMode = 'mix';
+    let animationId = null;
+    let gameRunning = false;
+    let lastTime = 0;
+
+    let score = 0;
+    let lives = 3;
+    let combo = 1;
+    let comboHits = 0;
+    let bestCombo = 1;
+    let perfectSwishes = 0;
+    let highScore = 0;
+
+    let shotClock = 12;
+    let roundResolved = false;
+    let currentProblem = null;
+    let hoops = [];
+    let particles = [];
+    let popupTexts = [];
+
+    let audioCtx = null;
+    let pointerDown = false;
+    let aimActive = false;
+
+    const world = {
+      width: 0,
+      height: 0,
+      floorY: 0,
+      gravity: 0.36
+    };
+
+    const playerBall = {
+      x: 0,
+      y: 0,
+      r: 18,
+      visible: true
+    };
+
+    const shotBall = {
+      active: false,
+      x: 0,
+      y: 0,
+      vx: 0,
+      vy: 0,
+      r: 14,
+      trail: [],
+      scoredOnHoopId: null
+    };
+
+    const aim = {
+      startX: 0,
+      startY: 0,
+      currentX: 0,
+      currentY: 0,
+      power: 0
+    };
+
+    function ensureAudio() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } catch (e) {}
+    }
+
+    function beep(freq, duration = 0.08, type = 'sine', gainVal = 0.05) {
+      try {
+        ensureAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function playScoreSound(perfect = false) {
+      beep(perfect ? 820 : 660, 0.08, 'triangle', 0.06);
+      setTimeout(() => beep(perfect ? 1040 : 880, 0.11, 'triangle', 0.05), 70);
+    }
+
+    function playMissSound() {
+      beep(180, 0.14, 'square', 0.07);
+      setTimeout(() => beep(130, 0.18, 'sawtooth', 0.05), 60);
+    }
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+
+      canvas.width = Math.floor(rect.width * dpr);
+      canvas.height = Math.floor(rect.height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      world.width = rect.width;
+      world.height = rect.height;
+      world.floorY = rect.height - 58;
+
+      resetLauncherPosition();
+      layoutHoops();
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+
+    function resetLauncherPosition() {
+      playerBall.x = world.width * 0.5;
+      playerBall.y = world.height - 42;
+      if (!shotBall.active) {
+        shotBall.x = playerBall.x;
+        shotBall.y = playerBall.y;
+      }
+    }
+
+    function randomInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function clamp(value, min, max) {
+      return Math.max(min, Math.min(max, value));
+    }
+
+    function safeGetHighScore() {
+      try {
+        const val = parseInt(localStorage.getItem('bolaPintarProHigh') || '0', 10);
+        return Number.isNaN(val) ? 0 : val;
+      } catch (e) {
+        return highScore || 0;
+      }
+    }
+
+    function safeSetHighScore(v) {
+      highScore = v;
+      try {
+        localStorage.setItem('bolaPintarProHigh', String(v));
+      } catch (e) {}
+    }
+
+    function updateHUD() {
+      scoreVal.textContent = score;
+      livesVal.textContent = lives > 0 ? '❤️'.repeat(lives) : '💔';
+      comboVal.textContent = 'x' + combo;
+      streakFill.style.width = Math.min(100, comboHits * 20) + '%';
+      timerVal.textContent = shotClock.toFixed(1) + 's';
+      hiVal.textContent = safeGetHighScore();
+    }
+
+    function setMode(mode) {
+      selectedMode = mode;
+      modeButtons.forEach(btn => btn.classList.toggle('active', btn.dataset.mode === mode));
+    }
+
+    modeButtons.forEach(btn => {
+      btn.addEventListener('click', () => setMode(btn.dataset.mode));
+    });
+
+    function generateProblem() {
+      let type = selectedMode;
+      if (type === 'mix') {
+        const types = ['add', 'sub', 'mul'];
+        type = types[randomInt(0, 2)];
+      }
+
+      let a, b, q, answer;
+      if (type === 'add') {
+        a = randomInt(4, 24);
+        b = randomInt(3, 20);
+        q = `${a} + ${b}`;
+        answer = a + b;
+      } else if (type === 'sub') {
+        a = randomInt(12, 40);
+        b = randomInt(2, a - 1);
+        q = `${a} - ${b}`;
+        answer = a - b;
+      } else {
+        a = randomInt(2, 12);
+        b = randomInt(2, 10);
+        q = `${a} × ${b}`;
+        answer = a * b;
+      }
+
+      const options = [answer];
+      while (options.length < 3) {
+        const delta = randomInt(1, 10);
+        let wrong = Math.random() > 0.5 ? answer + delta : answer - delta;
+        if (wrong < 0) wrong = Math.abs(wrong) + randomInt(2, 6);
+        if (!options.includes(wrong)) options.push(wrong);
+      }
+
+      options.sort(() => Math.random() - 0.5);
+
+      return {
+        text: `${q} = ?`,
+        answer,
+        options
+      };
+    }
+
+    function layoutHoops() {
+      if (!currentProblem) return;
+
+      const spacing = world.width / 4;
+      const hoopY = clamp(world.height * 0.32, 155, 220);
+
+      hoops = currentProblem.options.map((value, index) => ({
+        id: index + 1,
+        x: spacing * (index + 1),
+        y: hoopY + (index % 2 === 1 ? 10 : 0),
+        rimR: clamp(world.width * 0.08, 26, 34),
+        boardW: 16,
+        boardH: 80,
+        value,
+        isCorrect: value === currentProblem.answer,
+        swayOffset: Math.random() * Math.PI * 2,
+        scorePulse: 0
+      }));
+    }
+
+    function startGame() {
+      ensureAudio();
+      cancelAnimationFrame(animationId);
+
+      score = 0;
+      lives = 3;
+      combo = 1;
+      comboHits = 0;
+      bestCombo = 1;
+      perfectSwishes = 0;
+      particles = [];
+      popupTexts = [];
+      roundResolved = false;
+      shotClock = 12;
+      gameRunning = true;
+      pointerDown = false;
+      aimActive = false;
+      shotBall.active = false;
+      shotBall.trail = [];
+      shotBall.scoredOnHoopId = null;
+
+      currentProblem = generateProblem();
+      questionText.textContent = currentProblem.text;
+      resizeCanvas();
+      updateHUD();
+
+      hintText.textContent = 'Tarik bola di bawah, bidik ring jawaban yang benar, lalu lepaskan.';
+      menuScreen.classList.add('hidden');
+      gameOverScreen.classList.add('hidden');
+
+      lastTime = performance.now();
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function goToMenu() {
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+      menuScreen.classList.remove('hidden');
+      gameOverScreen.classList.add('hidden');
+    }
+
+    function nextRound() {
+      roundResolved = false;
+      shotClock = clamp(12 - Math.floor(score / 120) * 0.6, 7, 12);
+      shotBall.active = false;
+      shotBall.trail = [];
+      shotBall.scoredOnHoopId = null;
+      aimActive = false;
+      resetLauncherPosition();
+
+      currentProblem = generateProblem();
+      questionText.textContent = currentProblem.text;
+      layoutHoops();
+      updateHUD();
+    }
+
+    function gameOver() {
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+
+      const hi = safeGetHighScore();
+      if (score > hi) safeSetHighScore(score);
+      updateHUD();
+
+      finalScoreVal.textContent = score;
+      resultCombo.textContent = 'Combo Tertinggi: x' + bestCombo;
+      resultPerfect.textContent = 'Perfect Swish: ' + perfectSwishes;
+      gameOverScreen.classList.remove('hidden');
+    }
+
+    function createParticles(x, y, color, count = 18) {
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x, y,
+          vx: (Math.random() - 0.5) * 5,
+          vy: (Math.random() - 0.5) * 5,
+          life: 1,
+          size: Math.random() * 5 + 2,
+          color
         });
+      }
+    }
 
-        canvas.addEventListener('mousedown', pointerDown);
-        canvas.addEventListener('mousemove', pointerMove);
-        canvas.addEventListener('mouseup', pointerUp);
-        canvas.addEventListener('mouseleave', () => { aim.active = false; });
+    function createPopup(text, x, y, color = '#fff') {
+      popupTexts.push({
+        text, x, y, color,
+        life: 1.1,
+        vy: -0.5
+      });
+    }
 
-        canvas.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            pointerDown(e);
-        }, { passive: false });
+    function registerScore(hoop, isPerfect) {
+      roundResolved = true;
+      shotBall.active = false;
 
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault();
-            pointerMove(e);
-        }, { passive: false });
+      let gained = 10 * combo;
+      if (isPerfect) gained += 10;
 
-        canvas.addEventListener('touchend', (e) => {
-            e.preventDefault();
-            if (!gameActive) return;
+      if (hoop.isCorrect) {
+        score += gained;
+        comboHits += 1;
+        if (comboHits >= 2 && combo < 5) combo = Math.min(5, 1 + Math.floor(comboHits / 2));
+        bestCombo = Math.max(bestCombo, combo);
+        if (isPerfect) perfectSwishes++;
 
-            const fakeEvent = {
-                clientX: aim.currentX + canvas.getBoundingClientRect().left,
-                clientY: aim.currentY + canvas.getBoundingClientRect().top
-            };
-            pointerUp(fakeEvent);
-        }, { passive: false });
+        createParticles(hoop.x, hoop.y + 18, isPerfect ? '#fde047' : '#22c55e', isPerfect ? 26 : 20);
+        createPopup(isPerfect ? `SWISH! +${gained}` : `MASUK! +${gained}`, hoop.x, hoop.y - 18, isPerfect ? '#fde047' : '#bbf7d0');
+        playScoreSound(isPerfect);
 
-        hiVal.innerText = getHighScore();
-        updateUI();
-    </script>
+        hintText.textContent = isPerfect
+          ? 'Perfect swish! Tidak kena rim, skor bonus bertambah.'
+          : 'Masuk! Combo naik kalau terus benar.';
+      } else {
+        lives--;
+        combo = 1;
+        comboHits = 0;
+        createParticles(hoop.x, hoop.y + 18, '#ef4444', 18);
+        createPopup('SALAH RING!', hoop.x, hoop.y - 18, '#fecaca');
+        playMissSound();
+        hintText.textContent = 'Ring yang dimasuki salah. Bidik jawaban yang benar.';
+      }
+
+      updateHUD();
+
+      if (lives <= 0) {
+        setTimeout(gameOver, 550);
+      } else {
+        setTimeout(nextRound, 720);
+      }
+    }
+
+    function missShot(reason = 'MISS!') {
+      if (roundResolved) return;
+      roundResolved = true;
+      shotBall.active = false;
+      lives--;
+      combo = 1;
+      comboHits = 0;
+      createPopup(reason, world.width * 0.5, world.height * 0.45, '#fecaca');
+      createParticles(world.width * 0.5, world.height * 0.5, '#ef4444', 14);
+      playMissSound();
+      hintText.textContent = 'Belum masuk. Coba atur sudut lebih tinggi atau tenaga lebih pas.';
+      updateHUD();
+
+      if (lives <= 0) {
+        setTimeout(gameOver, 550);
+      } else {
+        setTimeout(nextRound, 700);
+      }
+    }
+
+    function updateShot(dt) {
+      if (!shotBall.active) return;
+
+      shotBall.vy += world.gravity * dt * 60;
+      shotBall.x += shotBall.vx * dt * 60;
+      shotBall.y += shotBall.vy * dt * 60;
+
+      shotBall.trail.push({ x: shotBall.x, y: shotBall.y, a: 1 });
+      if (shotBall.trail.length > 16) shotBall.trail.shift();
+
+      for (const t of shotBall.trail) t.a *= 0.94;
+
+      if (shotBall.x < shotBall.r) {
+        shotBall.x = shotBall.r;
+        shotBall.vx *= -0.72;
+      }
+      if (shotBall.x > world.width - shotBall.r) {
+        shotBall.x = world.width - shotBall.r;
+        shotBall.vx *= -0.72;
+      }
+
+      for (const hoop of hoops) {
+        const boardX = hoop.x + hoop.rimR + 12;
+        const boardTop = hoop.y - 48;
+        const boardBottom = hoop.y + 30;
+
+        if (
+          shotBall.x + shotBall.r > boardX &&
+          shotBall.x - shotBall.r < boardX + hoop.boardW &&
+          shotBall.y > boardTop &&
+          shotBall.y < boardBottom &&
+          shotBall.vx > 0
+        ) {
+          shotBall.x = boardX - shotBall.r;
+          shotBall.vx *= -0.74;
+          createParticles(shotBall.x, shotBall.y, '#ffffff', 6);
+        }
+
+        const leftRimX = hoop.x - hoop.rimR;
+        const rightRimX = hoop.x + hoop.rimR;
+        const rimY = hoop.y;
+
+        const distLeft = Math.hypot(shotBall.x - leftRimX, shotBall.y - rimY);
+        const distRight = Math.hypot(shotBall.x - rightRimX, shotBall.y - rimY);
+
+        if (distLeft < shotBall.r + 6) {
+          const angle = Math.atan2(shotBall.y - rimY, shotBall.x - leftRimX);
+          shotBall.x = leftRimX + Math.cos(angle) * (shotBall.r + 6);
+          shotBall.y = rimY + Math.sin(angle) * (shotBall.r + 6);
+          shotBall.vx = Math.cos(angle) * 3.6;
+          shotBall.vy = Math.sin(angle) * 3.6;
+        }
+
+        if (distRight < shotBall.r + 6) {
+          const angle = Math.atan2(shotBall.y - rimY, shotBall.x - rightRimX);
+          shotBall.x = rightRimX + Math.cos(angle) * (shotBall.r + 6);
+          shotBall.y = rimY + Math.sin(angle) * (shotBall.r + 6);
+          shotBall.vx = Math.cos(angle) * 3.6;
+          shotBall.vy = Math.sin(angle) * 3.6;
+        }
+
+        const enteringHoop =
+          shotBall.vy > 0 &&
+          shotBall.y > hoop.y - 10 &&
+          shotBall.y < hoop.y + 30 &&
+          shotBall.x > hoop.x - hoop.rimR + 4 &&
+          shotBall.x < hoop.x + hoop.rimR - 4;
+
+        if (enteringHoop && shotBall.scoredOnHoopId === null) {
+          const isPerfect = Math.abs(shotBall.x - hoop.x) < hoop.rimR * 0.34 && Math.abs(shotBall.vx) < 2.1;
+          shotBall.scoredOnHoopId = hoop.id;
+          registerScore(hoop, isPerfect);
+          return;
+        }
+      }
+
+      if (shotBall.y > world.floorY + 18) {
+        missShot('AIR BALL!');
+      }
+    }
+
+    function updateWorld(dt) {
+      if (!gameRunning) return;
+
+      if (!roundResolved) {
+        shotClock -= dt;
+        if (shotClock <= 0) {
+          shotClock = 0;
+          missShot('WAKTU HABIS!');
+        }
+      }
+
+      for (const hoop of hoops) {
+        hoop.scorePulse = Math.max(0, hoop.scorePulse - dt * 3);
+      }
+
+      particles = particles.filter(p => p.life > 0.02);
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.04;
+        p.life *= 0.94;
+      });
+
+      popupTexts = popupTexts.filter(p => p.life > 0.02);
+      popupTexts.forEach(p => {
+        p.y += p.vy;
+        p.life *= 0.97;
+      });
+
+      updateShot(dt);
+      updateHUD();
+    }
+
+    function drawCourt() {
+      ctx.save();
+
+      ctx.fillStyle = 'rgba(255,255,255,0.18)';
+      for (let i = 0; i < 7; i++) {
+        ctx.beginPath();
+        ctx.arc(world.width * 0.5, world.height + 70, 70 + i * 34, Math.PI, Math.PI * 2);
+        ctx.lineWidth = i === 0 ? 3 : 1.2;
+        ctx.strokeStyle = i === 0 ? 'rgba(255,255,255,0.35)' : 'rgba(255,255,255,0.10)';
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = 'rgba(255,255,255,0.08)';
+      ctx.fillRect(0, world.floorY, world.width, world.height - world.floorY);
+
+      ctx.restore();
+    }
+
+    function drawHoop(hoop, index) {
+      const sway = Math.sin(performance.now() * 0.0018 + hoop.swayOffset) * 4;
+      const x = hoop.x + sway;
+      hoop.renderX = x;
+
+      ctx.save();
+
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillRect(x + hoop.rimR + 16, hoop.y - 42, hoop.boardW, hoop.boardH);
+
+      ctx.fillStyle = '#f8fbff';
+      ctx.strokeStyle = '#091018';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(x + hoop.rimR + 8, hoop.y - 48, 18, 86, 6);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(x - hoop.rimR, hoop.y);
+      ctx.lineTo(x + hoop.rimR, hoop.y);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(255,255,255,0.7)';
+      ctx.lineWidth = 2;
+      for (let i = -2; i <= 2; i++) {
+        ctx.beginPath();
+        ctx.moveTo(x + i * 8, hoop.y + 1);
+        ctx.lineTo(x + i * 5, hoop.y + 28);
+        ctx.stroke();
+      }
+
+      ctx.fillStyle = hoop.isCorrect ? '#22c55e' : '#ffffff';
+      ctx.strokeStyle = '#091018';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.roundRect(x - 36, hoop.y - 94, 72, 38, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = hoop.isCorrect ? '#ffffff' : '#091018';
+      if (!hoop.isCorrect) {
+        ctx.fillStyle = '#091018';
+      } else {
+        ctx.fillStyle = '#ffffff';
+      }
+
+      if (hoop.isCorrect) {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(x - 36, hoop.y - 94, 72, 38);
+        ctx.fillStyle = '#22c55e';
+        ctx.beginPath();
+        ctx.roundRect(x - 36, hoop.y - 94, 72, 38, 14);
+        ctx.fill();
+      }
+
+      ctx.fillStyle = hoop.isCorrect ? '#ffffff' : '#091018';
+      ctx.font = '800 18px "Plus Jakarta Sans"';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(hoop.value, x, hoop.y - 75);
+
+      ctx.restore();
+    }
+
+    function drawLauncher() {
+      const shadowY = playerBall.y + 18;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.ellipse(playerBall.x, shadowY, 22, 8, 0, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(0,0,0,0.16)';
+      ctx.fill();
+
+      if (aimActive) {
+        ctx.beginPath();
+        ctx.moveTo(playerBall.x, playerBall.y);
+        ctx.lineTo(aim.currentX, aim.currentY);
+        ctx.setLineDash([8, 8]);
+        ctx.lineWidth = 4;
+        ctx.strokeStyle = 'rgba(9,16,24,0.45)';
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        const power = aim.power;
+        ctx.fillStyle = 'rgba(9,16,24,0.75)';
+        ctx.beginPath();
+        ctx.roundRect(playerBall.x - 50, playerBall.y + 34, 100, 12, 999);
+        ctx.fill();
+
+        ctx.fillStyle = power > 0.75 ? '#22c55e' : power > 0.45 ? '#facc15' : '#ef4444';
+        ctx.beginPath();
+        ctx.roundRect(playerBall.x - 50, playerBall.y + 34, 100 * power, 12, 999);
+        ctx.fill();
+      }
+
+      drawBasketball(playerBall.x, playerBall.y, playerBall.r, 0);
+      ctx.restore();
+    }
+
+    function drawBasketball(x, y, r, rotation = 0) {
+      ctx.save();
+      ctx.translate(x, y);
+      ctx.rotate(rotation);
+
+      ctx.beginPath();
+      ctx.arc(0, 0, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#f97316';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#3b1203';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.moveTo(-r, 0);
+      ctx.lineTo(r, 0);
+      ctx.moveTo(0, -r);
+      ctx.lineTo(0, r);
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(-r * 0.55, 0, r * 0.72, -1.1, 1.1);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.arc(r * 0.55, 0, r * 0.72, 2.04, 4.24);
+      ctx.stroke();
+
+      ctx.restore();
+    }
+
+    function drawShotBall() {
+      if (!shotBall.active) return;
+
+      for (const t of shotBall.trail) {
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, shotBall.r * 0.55, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${0.08 * t.a})`;
+        ctx.fill();
+      }
+
+      drawBasketball(shotBall.x, shotBall.y, shotBall.r, performance.now() * 0.01);
+    }
+
+    function drawParticles() {
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.globalAlpha = p.life;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function drawPopups() {
+      for (const p of popupTexts) {
+        ctx.save();
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+        ctx.lineWidth = 4;
+        ctx.font = '800 22px "Plus Jakarta Sans"';
+        ctx.textAlign = 'center';
+        ctx.strokeText(p.text, p.x, p.y);
+        ctx.fillText(p.text, p.x, p.y);
+        ctx.restore();
+      }
+    }
+
+    function drawShotPreview() {
+      if (!aimActive) return;
+
+      const dx = aim.startX - aim.currentX;
+      const dy = aim.startY - aim.currentY;
+      const strength = clamp(Math.hypot(dx, dy), 10, 150);
+      const scale = strength / 150;
+      let vx = dx * 0.11 * (0.65 + scale);
+      let vy = dy * 0.11 * (0.65 + scale);
+
+      let px = playerBall.x;
+      let py = playerBall.y;
+
+      ctx.save();
+      ctx.fillStyle = 'rgba(255,255,255,0.28)';
+      for (let i = 0; i < 22; i++) {
+        vy += world.gravity * 0.22;
+        px += vx * 0.22;
+        py += vy * 0.22;
+        ctx.beginPath();
+        ctx.arc(px, py, Math.max(2, 5 - i * 0.16), 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, world.width, world.height);
+
+      drawCourt();
+      hoops.forEach(drawHoop);
+      drawShotPreview();
+      drawShotBall();
+      drawLauncher();
+      drawParticles();
+      drawPopups();
+    }
+
+    function loop(timestamp) {
+      if (!gameRunning) return;
+
+      const dt = Math.min(0.032, (timestamp - lastTime) / 1000 || 0.016);
+      lastTime = timestamp;
+
+      updateWorld(dt);
+      draw();
+
+      animationId = requestAnimationFrame(loop);
+    }
+
+    function getPoint(e) {
+      const rect = canvas.getBoundingClientRect();
+      const point = e.touches ? e.touches[0] : e;
+      return {
+        x: point.clientX - rect.left,
+        y: point.clientY - rect.top
+      };
+    }
+
+    function onPointerStart(e) {
+      if (!gameRunning || shotBall.active || roundResolved) return;
+      ensureAudio();
+
+      const p = getPoint(e);
+      const dist = Math.hypot(p.x - playerBall.x, p.y - playerBall.y);
+
+      if (dist <= playerBall.r + 24) {
+        pointerDown = true;
+        aimActive = true;
+        aim.startX = playerBall.x;
+        aim.startY = playerBall.y;
+        aim.currentX = p.x;
+        aim.currentY = p.y;
+        aim.power = 0;
+      }
+    }
+
+    function onPointerMove(e) {
+      if (!pointerDown || !aimActive) return;
+      const p = getPoint(e);
+      aim.currentX = p.x;
+      aim.currentY = p.y;
+
+      const dist = Math.hypot(aim.startX - aim.currentX, aim.startY - aim.currentY);
+      aim.power = clamp(dist / 150, 0, 1);
+    }
+
+    function shootBall() {
+      const dx = aim.startX - aim.currentX;
+      const dy = aim.startY - aim.currentY;
+
+      const dist = clamp(Math.hypot(dx, dy), 12, 150);
+      const scale = dist / 150;
+      const vx = dx * 0.11 * (0.7 + scale);
+      const vy = dy * 0.11 * (0.7 + scale);
+
+      shotBall.active = true;
+      shotBall.x = playerBall.x;
+      shotBall.y = playerBall.y;
+      shotBall.vx = vx;
+      shotBall.vy = vy;
+      shotBall.trail = [];
+      shotBall.scoredOnHoopId = null;
+
+      beep(280, 0.07, 'square', 0.05);
+      hintText.textContent = 'Bola meluncur. Semoga masuk ke ring jawaban yang benar.';
+    }
+
+    function onPointerEnd() {
+      if (!pointerDown || !aimActive) return;
+
+      pointerDown = false;
+      if (aim.power > 0.08) {
+        shootBall();
+      }
+      aimActive = false;
+    }
+
+    canvas.addEventListener('mousedown', onPointerStart);
+    canvas.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerEnd);
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      onPointerStart(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      onPointerMove(e);
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      onPointerEnd();
+    }, { passive: false });
+
+    startBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('click', startGame);
+    menuBtn.addEventListener('click', () => {
+      gameOverScreen.classList.add('hidden');
+      menuScreen.classList.remove('hidden');
+      gameRunning = false;
+      cancelAnimationFrame(animationId);
+    });
+
+    highScore = safeGetHighScore();
+    updateHUD();
+    resizeCanvas();
+  </script>
 </body>
 </html>
