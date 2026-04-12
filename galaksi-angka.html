@@ -1,491 +1,930 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GALAKSI ANGKA - Matematika Luar Angkasa [v2026-03-29]</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
-    <!-- Force deployment: 2026-03-29 20:00 -->
-    <style>
-        :root {
-            --primary: #7C3AED;
-            --secondary: #FBBF24;
-            --dark: #0F172A;
-            --white: #FFFFFF;
-            --danger: #EF4444;
-            --success: #22C55E;
-            --border: 4px solid #000000;
-            --shadow: 6px 6px 0px #000000;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--dark);
-            color: var(--white);
-            overflow: hidden;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .stars {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: -1;
-            background: radial-gradient(circle at center, #1e1b4b 0%, #0f172a 100%);
-        }
-        .star {
-            position: absolute;
-            background: white;
-            border-radius: 50%;
-            opacity: 0.5;
-            animation: move linear infinite;
-        }
-        @keyframes move {
-            from { transform: translateY(-10vh); }
-            to { transform: translateY(110vh); }
-        }
-        header {
-            width: 100%;
-            max-width: 500px;
-            padding: 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 10;
-        }
-        .stats-box {
-            background: var(--white);
-            color: black;
-            padding: 5px 12px;
-            border: 3px solid black;
-            box-shadow: 3px 3px 0px black;
-            font-size: 0.9rem;
-            font-weight: 800;
-        }
-        .lives {
-            font-size: 1.2rem;
-        }
-        #game-container {
-            width: 100%;
-            max-width: 500px;
-            flex: 1;
-            position: relative;
-            overflow: hidden;
-        }
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-        .overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(15, 23, 42, 0.95);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 20px;
-            z-index: 100;
-        }
-        .hidden {
-            display: none !important;
-        }
-        h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
-            -webkit-text-stroke: 1px black;
-        }
-        .btn {
-            width: 100%;
-            max-width: 280px;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 1.2rem;
-            font-weight: 800;
-            border: var(--border);
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: 0.1s;
-            font-family: 'Poppins', sans-serif;
-        }
-        .btn:active {
-            transform: translate(3px, 3px);
-            box-shadow: 2px 2px 0px black;
-        }
-        .btn-purple { background: var(--primary); color: white; }
-        .btn-yellow { background: var(--secondary); color: black; }
-        .btn-outline { background: white; color: black; }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>GALAKSI ANGKA - Matematika Luar Angkasa [v2026-04-12]</title>
 
-        #controls {
-            width: 100%;
-            max-width: 500px;
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            background: rgba(0, 0, 0, 0.5);
-            border-top: var(--border);
-        }
-        .ans-btn {
-            padding: 15px 5px;
-            font-size: 1.4rem;
-            font-weight: 800;
-            border: var(--border);
-            box-shadow: 4px 4px 0px black;
-            background: white;
-            color: black;
-            cursor: pointer;
-        }
-        .ans-btn.correct {
-            background: var(--success) !important;
-            color: white;
-        }
-        .ans-btn.wrong {
-            background: var(--danger) !important;
-            color: white;
-        }
-        .final-score-text {
-            font-size: 3rem;
-            color: var(--secondary);
-            font-weight: 800;
-        }
-        .stars-rating {
-            font-size: 2.5rem;
-            margin: 10px 0;
-        }
-    </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #7C3AED;
+      --secondary: #FBBF24;
+      --dark: #0F172A;
+      --white: #FFFFFF;
+      --danger: #EF4444;
+      --success: #22C55E;
+      --border: 4px solid #000000;
+      --shadow: 6px 6px 0px #000000;
+      --shadow-sm: 4px 4px 0px #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--dark);
+      color: var(--white);
+    }
+
+    .stars {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      background:
+        radial-gradient(circle at 50% 20%, #312e81 0%, #1e1b4b 22%, #0f172a 70%),
+        linear-gradient(to bottom, #0f172a 0%, #020617 100%);
+      overflow: hidden;
+    }
+
+    .star {
+      position: absolute;
+      background: white;
+      border-radius: 999px;
+      opacity: 0.55;
+      animation: move linear infinite;
+    }
+
+    @keyframes move {
+      from { transform: translateY(-12vh); }
+      to { transform: translateY(112vh); }
+    }
+
+    .app-shell {
+      width: 100%;
+      max-width: 520px;
+      height: 100dvh;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header {
+      min-height: 84px;
+      width: 100%;
+      padding: max(12px, env(safe-area-inset-top)) 12px 10px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .stats-box {
+      text-align: center;
+      background: var(--white);
+      color: black;
+      padding: 8px 6px;
+      border: 3px solid black;
+      box-shadow: 3px 3px 0px black;
+      font-size: 0.8rem;
+      font-weight: 800;
+      border-radius: 14px;
+      line-height: 1.15;
+    }
+
+    .stats-box span {
+      display: block;
+      font-size: 1rem;
+      margin-top: 2px;
+    }
+
+    #game-container {
+      position: relative;
+      width: 100%;
+      min-height: 0;
+      overflow: hidden;
+      padding: 0 10px 8px;
+    }
+
+    .game-stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      overflow: hidden;
+      border: 3px solid rgba(255,255,255,0.15);
+      box-shadow: inset 0 0 0 2px rgba(255,255,255,0.04);
+      background: linear-gradient(to bottom, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+    }
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.94);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 22px 18px;
+      z-index: 100;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2rem, 6vw, 2.6rem);
+      line-height: 1.05;
+      color: var(--secondary);
+      margin-bottom: 18px;
+      -webkit-text-stroke: 1px black;
+      text-shadow: 0 4px 0 rgba(0,0,0,0.35);
+    }
+
+    .subtitle {
+      margin-bottom: 10px;
+      font-size: 1rem;
+      opacity: 0.95;
+    }
+
+    .btn {
+      width: 100%;
+      max-width: 300px;
+      min-height: 52px;
+      padding: 14px 16px;
+      margin: 8px 0;
+      font-size: 1.05rem;
+      font-weight: 800;
+      border: var(--border);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.1s, filter 0.15s;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      border-radius: 18px;
+      text-decoration: none;
+      display: block;
+      text-align: center;
+    }
+
+    .btn:hover {
+      filter: brightness(1.03);
+    }
+
+    .btn:active {
+      transform: translate(3px, 3px);
+      box-shadow: 2px 2px 0px black;
+    }
+
+    .btn-purple { background: var(--primary); color: white; }
+    .btn-yellow { background: var(--secondary); color: black; }
+    .btn-outline { background: white; color: black; }
+
+    #controls {
+      position: sticky;
+      bottom: 0;
+      width: 100%;
+      padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+      background: linear-gradient(to top, rgba(2, 6, 23, 0.96), rgba(2, 6, 23, 0.82));
+      border-top: 4px solid #000;
+      box-shadow: 0 -10px 30px rgba(0,0,0,0.28);
+      z-index: 20;
+    }
+
+    .controls-wrap {
+      max-width: 520px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .ans-btn {
+      min-height: 60px;
+      padding: 10px 4px;
+      font-size: clamp(1rem, 4vw, 1.3rem);
+      font-weight: 800;
+      border: var(--border);
+      box-shadow: var(--shadow-sm);
+      background: white;
+      color: black;
+      cursor: pointer;
+      border-radius: 18px;
+      transition: transform 0.08s, box-shadow 0.08s, background 0.15s, color 0.15s;
+    }
+
+    .ans-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px black;
+    }
+
+    .ans-btn.correct {
+      background: var(--success) !important;
+      color: white;
+    }
+
+    .ans-btn.wrong {
+      background: var(--danger) !important;
+      color: white;
+    }
+
+    .ans-btn:disabled {
+      opacity: 1;
+      cursor: default;
+    }
+
+    .final-score-text {
+      font-size: clamp(2.2rem, 10vw, 3.4rem);
+      color: var(--secondary);
+      font-weight: 800;
+      line-height: 1;
+      margin: 8px 0 6px;
+    }
+
+    .stars-rating {
+      font-size: 2.4rem;
+      margin: 10px 0;
+    }
+
+    .mini-note {
+      margin-top: 8px;
+      font-size: 0.92rem;
+      opacity: 0.82;
+    }
+
+    @media (max-width: 420px) {
+      header {
+        padding-left: 10px;
+        padding-right: 10px;
+        gap: 6px;
+      }
+
+      .stats-box {
+        font-size: 0.72rem;
+        padding: 7px 4px;
+      }
+
+      .stats-box span {
+        font-size: 0.92rem;
+      }
+
+      #game-container {
+        padding: 0 8px 6px;
+      }
+
+      .controls-wrap {
+        gap: 8px;
+      }
+
+      .ans-btn {
+        min-height: 56px;
+        font-size: 1rem;
+      }
+
+      .btn {
+        font-size: 0.98rem;
+        min-height: 50px;
+      }
+    }
+
+    @media (max-height: 700px) {
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+      }
+
+      .subtitle {
+        font-size: 0.94rem;
+      }
+
+      .btn {
+        margin: 6px 0;
+        min-height: 48px;
+        padding: 12px 14px;
+      }
+
+      .overlay {
+        padding: 16px 14px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div id="star-field" class="stars"></div>
+  <div id="star-field" class="stars"></div>
 
+  <div class="app-shell">
     <header>
-        <div class="stats-box">SKOR: <span id="score-val">0</span></div>
-        <div id="lives-val" class="lives">❤️❤️❤️</div>
-        <div class="stats-box">HI: <span id="hi-val">0</span></div>
+      <div class="stats-box">SKOR<span id="score-val">0</span></div>
+      <div class="stats-box">NYAWA<span id="lives-val">3</span></div>
+      <div class="stats-box">LEVEL<span id="level-val">1</span></div>
+      <div class="stats-box">SOAL<span id="question-val">1/10</span></div>
     </header>
 
     <div id="game-container">
+      <div class="game-stage">
         <canvas id="gameCanvas"></canvas>
-        
+
         <div id="screen-start" class="overlay">
-            <h1>GALAKSI ANGKA</h1>
-            <p>Pilih Jenjang Sekolahmu:</p>
-            <button class="btn btn-purple" onclick="setGrade('SD')">SD (Tambah/Kurang)</button>
-            <button class="btn btn-yellow" onclick="setGrade('SMP')">SMP (Kali/Bagi)</button>
-            <button class="btn btn-outline" onclick="setGrade('SMA')">SMA (Akar/Pangkat)</button>
-            <a href="/#games" class="btn btn-outline" style="text-decoration:none; display:block; text-align:center;">⬅ Kembali ke Portal 🍎</a>
+          <h1>GALAKSI ANGKA</h1>
+          <p class="subtitle">Pilih Jenjang Sekolahmu:</p>
+          <button class="btn btn-purple" onclick="setGrade('SD')">SD (Tambah/Kurang)</button>
+          <button class="btn btn-yellow" onclick="setGrade('SMP')">SMP (Kali/Bagi)</button>
+          <button class="btn btn-outline" onclick="setGrade('SMA')">SMA (Akar/Pangkat)</button>
+          <a href="/#games" class="btn btn-outline">⬅ Kembali ke Portal 🍎</a>
+          <p class="mini-note">Setiap level berisi 10 soal.</p>
         </div>
 
         <div id="screen-result" class="overlay hidden">
-            <h1>GAME OVER</h1>
-            <div id="res-stars" class="stars-rating">⭐⭐⭐</div>
-            <p>Skor Akhir:</p>
-            <div id="res-score" class="final-score-text">0</div>
-            <p id="res-msg">Hebat! Terus berlatih ya!</p>
-            <button class="btn btn-yellow" onclick="startGame()">MAIN LAGI</button>
-            <button class="btn btn-outline" onclick="showMenu()">GANTI JENJANG</button>
+          <h1>GAME OVER</h1>
+          <div id="res-stars" class="stars-rating">⭐⭐⭐</div>
+          <p>Skor Akhir:</p>
+          <div id="res-score" class="final-score-text">0</div>
+          <p id="res-msg">Hebat! Terus berlatih ya!</p>
+          <button class="btn btn-yellow" onclick="startGame()">MAIN LAGI</button>
+          <button class="btn btn-outline" onclick="showMenu()">GANTI JENJANG</button>
         </div>
+
+        <div id="screen-levelup" class="overlay hidden">
+          <h1>LEVEL NAIK!</h1>
+          <p class="subtitle">Mantap! Lanjut ke level berikutnya.</p>
+          <div id="levelup-text" class="final-score-text" style="font-size:2.2rem;">LEVEL 2</div>
+          <button class="btn btn-yellow" onclick="continueNextLevel()">LANJUT</button>
+        </div>
+      </div>
     </div>
 
     <div id="controls">
+      <div class="controls-wrap">
         <button class="ans-btn" onclick="handleAnswer(0)">?</button>
         <button class="ans-btn" onclick="handleAnswer(1)">?</button>
         <button class="ans-btn" onclick="handleAnswer(2)">?</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
-        const scoreEl = document.getElementById('score-val');
-        const hiEl = document.getElementById('hi-val');
-        const livesEl = document.getElementById('lives-val');
-        const ansBtns = document.querySelectorAll('.ans-btn');
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-        let grade = 'SD';
-        let score = 0;
-        let lives = 3;
-        let gameActive = false;
-        let currentProblem = null;
-        let meteor = { y: -100, x: 0, speed: 1.5, shape: [] };
-        let lasers = [];
-        let timer = 10; // initial time
-        let timerInterval;
-        let animationId;
+    const scoreEl = document.getElementById('score-val');
+    const livesEl = document.getElementById('lives-val');
+    const levelEl = document.getElementById('level-val');
+    const questionEl = document.getElementById('question-val');
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        function playBeep(freq, duration, type = 'sine') {
-            try {
-                const osc = audioCtx.createOscillator();
-                const gain = audioCtx.createGain();
-                osc.type = type;
-                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                osc.start();
-                osc.stop(audioCtx.currentTime + duration);
-            } catch(e) {}
+    const ansBtns = document.querySelectorAll('.ans-btn');
+
+    const startScreen = document.getElementById('screen-start');
+    const resultScreen = document.getElementById('screen-result');
+    const levelupScreen = document.getElementById('screen-levelup');
+
+    let grade = 'SD';
+    let score = 0;
+    let lives = 3;
+    let level = 1;
+    let questionInLevel = 0;
+    const questionsPerLevel = 10;
+
+    let gameActive = false;
+    let currentProblem = null;
+    let questionResolved = false;
+
+    let meteor = { y: -100, x: 0, speed: 1.5, shape: [] };
+    let lasers = [];
+    let timer = 10;
+    let timerInterval = null;
+    let animationId = null;
+    let nextQuestionTimeout = null;
+
+    let audioCtx = null;
+    function ensureAudio() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (audioCtx.state === 'suspended') audioCtx.resume();
+      } catch (e) {}
+    }
+
+    function playBeep(freq, duration, type = 'sine') {
+      try {
+        ensureAudio();
+        if (!audioCtx) return;
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.11, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function createStars() {
+      const field = document.getElementById('star-field');
+      if (field.dataset.ready) return;
+      field.dataset.ready = '1';
+
+      for (let i = 0; i < 55; i++) {
+        const s = document.createElement('div');
+        s.className = 'star';
+        const size = (Math.random() * 3 + 1);
+        s.style.width = size + 'px';
+        s.style.height = size + 'px';
+        s.style.left = Math.random() * 100 + '%';
+        s.style.top = Math.random() * 100 + '%';
+        s.style.animationDuration = (Math.random() * 4 + 3) + 's';
+        s.style.animationDelay = Math.random() * 5 + 's';
+        field.appendChild(s);
+      }
+    }
+    createStars();
+
+    function resize() {
+      const ratio = window.devicePixelRatio || 1;
+      const displayWidth = canvas.clientWidth;
+      const displayHeight = canvas.clientHeight;
+      canvas.width = Math.floor(displayWidth * ratio);
+      canvas.height = Math.floor(displayHeight * ratio);
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+
+    function shuffle(arr) {
+      return [...arr].sort(() => Math.random() - 0.5);
+    }
+
+    function makeUniqueOptions(correctAnswer, generator, minValue = null) {
+      const set = new Set([correctAnswer]);
+      let guard = 0;
+
+      while (set.size < 3 && guard < 100) {
+        let wrong = generator(correctAnswer);
+        if (!Number.isInteger(wrong)) {
+          guard++;
+          continue;
+        }
+        if (minValue !== null && wrong < minValue) {
+          guard++;
+          continue;
+        }
+        if (wrong !== correctAnswer) set.add(wrong);
+        guard++;
+      }
+
+      let delta = 1;
+      while (set.size < 3) {
+        const plus = correctAnswer + delta;
+        const minus = correctAnswer - delta;
+
+        if (minValue === null || plus >= minValue) set.add(plus);
+        if (set.size < 3 && (minValue === null || minus >= minValue)) set.add(minus);
+        delta++;
+      }
+
+      return shuffle([...set]);
+    }
+
+    function isValidProblem(problem) {
+      if (!problem) return false;
+      if (typeof problem.text !== 'string' || !problem.text.trim()) return false;
+      if (!Number.isInteger(problem.ans)) return false;
+      if (!Array.isArray(problem.options) || problem.options.length !== 3) return false;
+      if (!problem.options.every(Number.isInteger)) return false;
+
+      const uniqueOptions = new Set(problem.options);
+      if (uniqueOptions.size !== 3) return false;
+      if (!uniqueOptions.has(problem.ans)) return false;
+      if (problem.text.includes('÷ 0')) return false;
+
+      if (problem.text.startsWith('√')) {
+        const n = parseInt(problem.text.replace('√', ''), 10);
+        if (!Number.isInteger(n)) return false;
+        if (Math.sqrt(n) !== problem.ans) return false;
+      }
+
+      return true;
+    }
+
+    function generateProblem() {
+      let text = '';
+      let ans = 0;
+      let options = [];
+
+      if (grade === 'SD') {
+        const useAddition = Math.random() > 0.5;
+
+        if (useAddition) {
+          const a = Math.floor(Math.random() * 15) + 1;
+          const b = Math.floor(Math.random() * 15) + 1;
+          ans = a + b;
+          text = `${a} + ${b}`;
+        } else {
+          let a = Math.floor(Math.random() * 15) + 1;
+          let b = Math.floor(Math.random() * 15) + 1;
+          if (b > a) [a, b] = [b, a];
+          ans = a - b;
+          text = `${a} - ${b}`;
         }
 
-        function createStars() {
-            const field = document.getElementById('star-field');
-            for (let i = 0; i < 50; i++) {
-                const s = document.createElement('div');
-                s.className = 'star';
-                s.style.width = s.style.height = (Math.random() * 3) + 'px';
-                s.style.left = Math.random() * 100 + '%';
-                s.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                s.style.animationDelay = Math.random() * 5 + 's';
-                field.appendChild(s);
-            }
-        }
-        createStars();
+        options = makeUniqueOptions(
+          ans,
+          (correct) => {
+            const delta = Math.floor(Math.random() * 5) + 1;
+            return Math.random() > 0.5 ? correct + delta : correct - delta;
+          },
+          0
+        );
+      }
 
-        function resize() {
-            canvas.width = canvas.offsetWidth;
-            canvas.height = canvas.offsetHeight;
-        }
-        window.addEventListener('resize', resize);
-        resize();
+      else if (grade === 'SMP') {
+        const t = Math.floor(Math.random() * 3);
 
-        function generateProblem() {
-            let a, b, op, ans, options = [];
-            if (grade === 'SD') {
-                a = Math.floor(Math.random() * 15) + 5;
-                b = Math.floor(Math.random() * 10) + 1;
-                if (Math.random() > 0.5) { op = '+'; ans = a + b; }
-                else { op = '-'; ans = a - b; }
-            } else if (grade === 'SMP') {
-                const t = Math.floor(Math.random() * 3);
-                if (t === 0) {
-                    a = Math.floor(Math.random() * 10) + 2;
-                    b = Math.floor(Math.random() * 9) + 2;
-                    op = '×'; ans = a * b;
-                } else if (t === 1) {
-                    ans = Math.floor(Math.random() * 10) + 2;
-                    b = Math.floor(Math.random() * 9) + 2;
-                    a = ans * b; op = '÷';
-                } else {
-                    a = Math.floor(Math.random() * 20) - 10;
-                    b = Math.floor(Math.random() * 20) - 10;
-                    op = '+'; ans = a + b;
-                }
-            } else {
-                const t = Math.floor(Math.random() * 3);
-                if (t === 0) {
-                    a = Math.floor(Math.random() * 12) + 2; op = '²'; ans = a * a;
-                } else if (t === 1) {
-                    ans = Math.floor(Math.random() * 12) + 2; a = ans * ans; op = '√';
-                } else {
-                    a = Math.floor(Math.random() * 15) + 1;
-                    ans = Math.floor(Math.random() * 15) + 1;
-                    let sum = a + ans;
-                    op = "x + " + a + " = " + sum + ". x?";
-                    a = ''; b = '';
-                }
-            }
-            options = [ans];
-            while (options.length < 3) {
-                let off = Math.floor(Math.random() * 5) + 1;
-                let w = Math.random() > 0.5 ? ans + off : ans - off;
-                if (!options.includes(w)) options.push(w);
-            }
-            options.sort(() => Math.random() - 0.5);
-            let text = (grade === 'SMA')
-                ? (op === '√' ? "√" + a : (op === '²' ? a + "²" : op))
-                : (a + ' ' + op + ' ' + b);
-            return { text, ans, options };
+        if (t === 0) {
+          const a = Math.floor(Math.random() * 10) + 2;
+          const b = Math.floor(Math.random() * 9) + 2;
+          ans = a * b;
+          text = `${a} × ${b}`;
+        }
+        else if (t === 1) {
+          const divisor = Math.floor(Math.random() * 9) + 2;
+          const quotient = Math.floor(Math.random() * 10) + 2;
+          const dividend = divisor * quotient;
+          ans = quotient;
+          text = `${dividend} ÷ ${divisor}`;
+        }
+        else {
+          const a = Math.floor(Math.random() * 21) - 10;
+          const b = Math.floor(Math.random() * 21) - 10;
+          ans = a + b;
+          text = `${a} + ${b}`;
         }
 
-        function setGrade(g) {
-            grade = g;
-            hiEl.innerText = localStorage.getItem('hiScore_' + grade) || 0;
-            document.getElementById('screen-start').classList.add('hidden');
-            startGame();
+        options = makeUniqueOptions(ans, (correct) => {
+          const delta = Math.floor(Math.random() * 6) + 1;
+          return Math.random() > 0.5 ? correct + delta : correct - delta;
+        });
+      }
+
+      else if (grade === 'SMA') {
+        const t = Math.floor(Math.random() * 3);
+
+        if (t === 0) {
+          const a = Math.floor(Math.random() * 12) + 2;
+          ans = a * a;
+          text = `${a}²`;
+        }
+        else if (t === 1) {
+          const root = Math.floor(Math.random() * 12) + 2;
+          const square = root * root;
+          ans = root;
+          text = `√${square}`;
+        }
+        else {
+          const addend = Math.floor(Math.random() * 15) + 1;
+          const x = Math.floor(Math.random() * 15) + 1;
+          const sum = x + addend;
+          ans = x;
+          text = `x + ${addend} = ${sum}. x?`;
         }
 
-        function showMenu() {
-            document.getElementById('screen-result').classList.add('hidden');
-            document.getElementById('screen-start').classList.remove('hidden');
-            gameActive = false;
+        options = makeUniqueOptions(
+          ans,
+          (correct) => {
+            const delta = Math.floor(Math.random() * 5) + 1;
+            return Math.random() > 0.5 ? correct + delta : correct - delta;
+          },
+          1
+        );
+      }
+
+      const problem = { text, ans, options };
+      if (!isValidProblem(problem)) return generateProblem();
+      return problem;
+    }
+
+    function setGrade(g) {
+      ensureAudio();
+      grade = g;
+      startScreen.classList.add('hidden');
+      resultScreen.classList.add('hidden');
+      levelupScreen.classList.add('hidden');
+      startGame();
+    }
+
+    function showMenu() {
+      stopAllTimersAndFrames();
+      gameActive = false;
+      questionResolved = true;
+      resultScreen.classList.add('hidden');
+      levelupScreen.classList.add('hidden');
+      startScreen.classList.remove('hidden');
+    }
+
+    function stopAllTimersAndFrames() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = null;
+
+      if (animationId) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    }
+
+    function startGame() {
+      ensureAudio();
+      stopAllTimersAndFrames();
+
+      score = 0;
+      lives = 3;
+      level = 1;
+      questionInLevel = 0;
+      timer = 10;
+      lasers = [];
+      gameActive = true;
+      questionResolved = false;
+
+      resultScreen.classList.add('hidden');
+      levelupScreen.classList.add('hidden');
+
+      updateUI();
+      newQuestion();
+      gameLoop();
+    }
+
+    function continueNextLevel() {
+      levelupScreen.classList.add('hidden');
+      gameActive = true;
+      questionResolved = false;
+      newQuestion();
+      gameLoop();
+    }
+
+    function updateUI() {
+      scoreEl.innerText = score;
+      livesEl.innerText = lives;
+      levelEl.innerText = level;
+      const shownQuestion = Math.min(questionInLevel + 1, questionsPerLevel);
+      questionEl.innerText = `${shownQuestion}/${questionsPerLevel}`;
+    }
+
+    function newQuestion() {
+      if (!gameActive) return;
+
+      clearInterval(timerInterval);
+      clearTimeout(nextQuestionTimeout);
+      nextQuestionTimeout = null;
+
+      currentProblem = generateProblem();
+      questionResolved = false;
+
+      meteor.y = -60;
+      meteor.x = canvas.clientWidth / 2;
+      meteor.shape = [];
+      for (let i = 0; i < 10; i++) {
+        meteor.shape.push(0.8 + Math.random() * 0.4);
+      }
+
+      lasers = [];
+      meteor.speed = 1.5 + ((level - 1) * 0.35) + (score / 120);
+
+      ansBtns.forEach((btn, i) => {
+        btn.innerText = currentProblem.options[i];
+        btn.className = 'ans-btn';
+        btn.disabled = false;
+      });
+
+      timer = Math.max(5, 10 - (level - 1) * 0.35);
+      updateUI();
+
+      timerInterval = setInterval(() => {
+        if (!gameActive || questionResolved) return;
+
+        timer = Math.max(0, timer - 0.1);
+
+        if (timer <= 0) {
+          resolveQuestion('timeout');
+        }
+      }, 100);
+    }
+
+    function handleAnswer(idx) {
+      if (!gameActive || !currentProblem || questionResolved) return;
+      const chosen = currentProblem.options[idx];
+
+      if (chosen === currentProblem.ans) {
+        resolveQuestion('correct', idx);
+      } else {
+        resolveQuestion('wrong', idx);
+      }
+    }
+
+    function resolveQuestion(type, idx = null) {
+      if (!gameActive || questionResolved) return;
+      questionResolved = true;
+
+      clearInterval(timerInterval);
+      timerInterval = null;
+
+      ansBtns.forEach(btn => btn.disabled = true);
+
+      if (type === 'correct') {
+        if (idx !== null) ansBtns[idx].classList.add('correct');
+        playBeep(820, 0.13);
+        lasers.push({ x: canvas.clientWidth / 2, y: canvas.clientHeight - 76, hit: false });
+      } else {
+        if (idx !== null) ansBtns[idx].classList.add('wrong');
+
+        ansBtns.forEach(btn => {
+          if (parseInt(btn.innerText, 10) === currentProblem.ans) {
+            btn.classList.add('correct');
+          }
+        });
+
+        lives--;
+        playBeep(220, 0.28, 'sawtooth');
+        updateUI();
+
+        if (lives <= 0) {
+          nextQuestionTimeout = setTimeout(() => endGame(), 500);
+          return;
         }
 
-        function startGame() {
-            score = 0;
-            lives = 3;
-            gameActive = true;
-            document.getElementById('screen-result').classList.add('hidden');
-            updateUI();
-            newQuestion();
-            gameLoop();
+        nextQuestionTimeout = setTimeout(() => {
+          advanceAfterQuestion(false);
+        }, 700);
+      }
+    }
+
+    function advanceAfterQuestion(wasCorrect) {
+      if (!gameActive) return;
+
+      questionInLevel++;
+
+      if (questionInLevel >= questionsPerLevel) {
+        level++;
+        questionInLevel = 0;
+        gameActive = false;
+        questionResolved = true;
+        levelupScreen.classList.remove('hidden');
+        document.getElementById('levelup-text').innerText = `LEVEL ${level}`;
+        updateUI();
+        return;
+      }
+
+      newQuestion();
+    }
+
+    function endGame() {
+      gameActive = false;
+      questionResolved = true;
+      stopAllTimersAndFrames();
+
+      playBeep(150, 0.5, 'square');
+      document.getElementById('res-score').innerText = score;
+
+      let stars = "⭐";
+      let msg = "Ayo belajar lagi!";
+
+      if (score >= 100) {
+        stars = "⭐⭐⭐";
+        msg = "Luar biasa! Kamu jenius!";
+      } else if (score >= 50) {
+        stars = "⭐⭐";
+        msg = "Hebat! Pertahankan!";
+      }
+
+      document.getElementById('res-stars').innerText = stars;
+      document.getElementById('res-msg').innerText = msg;
+      resultScreen.classList.remove('hidden');
+    }
+
+    function drawMeteor() {
+      ctx.save();
+      ctx.translate(meteor.x, meteor.y);
+
+      ctx.fillStyle = '#6B7280';
+      ctx.beginPath();
+      meteor.shape.forEach((rMul, i) => {
+        const a = (i / meteor.shape.length) * Math.PI * 2;
+        const r = 45 * rMul;
+        if (i === 0) ctx.moveTo(r * Math.cos(a), r * Math.sin(a));
+        else ctx.lineTo(r * Math.cos(a), r * Math.sin(a));
+      });
+      ctx.closePath();
+      ctx.fill();
+
+      ctx.strokeStyle = '#374151';
+      ctx.lineWidth = 4;
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(0,0,0,0.2)';
+      [
+        { x: -15, y: -10, r: 10 },
+        { x: 10, y: 15, r: 8 },
+        { x: 20, y: -5, r: 6 }
+      ].forEach(c => {
+        ctx.beginPath();
+        ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      ctx.fillStyle = 'white';
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 4;
+      ctx.font = '800 22px "Plus Jakarta Sans"';
+      ctx.textAlign = 'center';
+      ctx.strokeText(currentProblem?.text || '', 0, 7);
+      ctx.fillText(currentProblem?.text || '', 0, 7);
+
+      const maxTimerWidth = 86;
+      const timerBase = Math.max(5, 10 - (level - 1) * 0.35);
+      const tw = (timer / timerBase) * maxTimerWidth;
+      ctx.fillStyle = timer < 3 ? '#EF4444' : '#FBBF24';
+      ctx.fillRect(-43, 60, Math.max(0, tw), 8);
+      ctx.strokeStyle = 'black';
+      ctx.strokeRect(-43, 60, 86, 8);
+
+      ctx.restore();
+    }
+
+    function drawLasers() {
+      for (let i = lasers.length - 1; i >= 0; i--) {
+        const l = lasers[i];
+        l.y -= 15;
+
+        ctx.strokeStyle = '#EF4444';
+        ctx.lineWidth = 4;
+        ctx.beginPath();
+        ctx.moveTo(l.x, l.y);
+        ctx.lineTo(l.x, l.y - 22);
+        ctx.stroke();
+
+        if (!l.hit && l.y < meteor.y + 40) {
+          l.hit = true;
+          lasers.splice(i, 1);
+          score += 10;
+          updateUI();
+
+          nextQuestionTimeout = setTimeout(() => {
+            advanceAfterQuestion(true);
+          }, 120);
         }
+      }
+    }
 
-        // FIXED VERSION
-        function newQuestion() {
-            currentProblem = generateProblem();
-            meteor.y = -60;
-            meteor.x = canvas.width / 2;
-            meteor.shape = [];
-            for (let i = 0; i < 10; i++) {
-                meteor.shape.push(0.8 + Math.random() * 0.4);
-            }
-            lasers = [];
-            meteor.speed = 1.5 + (score / 80); // Faster difficulty scaling
+    function drawRocket() {
+      ctx.font = '54px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('🚀', canvas.clientWidth / 2, canvas.clientHeight - 24);
+    }
 
-            ansBtns.forEach((btn, i) => {
-                btn.innerText = currentProblem.options[i];
-                btn.className = 'ans-btn';
-                btn.disabled = false;
-            });
+    function gameLoop() {
+      if (!gameActive) return;
 
-            timer = 10; // Reset timer
-            clearInterval(timerInterval);
-            timerInterval = setInterval(() => {
-                if (!gameActive) return;
-                timer -= 0.1;
-                if (timer <= 0) wrongAnswer();
-            }, 100);
-        }
+      ctx.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
 
-        function handleAnswer(idx) {
-            if (!gameActive) return;
-            const chosen = currentProblem.options[idx];
-            if (chosen === currentProblem.ans) {
-                ansBtns[idx].classList.add('correct');
-                playBeep(800, 0.1);
-                lasers.push({ x: canvas.width / 2, y: canvas.height - 50 });
-            } else {
-                ansBtns[idx].classList.add('wrong');
-                ansBtns.forEach(btn => {
-                    if (parseInt(btn.innerText) === currentProblem.ans) btn.classList.add('correct');
-                });
-                wrongAnswer();
-            }
-            ansBtns.forEach(btn => btn.disabled = true);
-        }
+      if (!questionResolved) {
+        meteor.y += meteor.speed;
+      }
 
-        function wrongAnswer() {
-            lives--;
-            playBeep(200, 0.3, 'sawtooth');
-            updateUI();
-            if (lives <= 0) endGame();
-            else setTimeout(newQuestion, 800);
-        }
+      drawMeteor();
+      drawLasers();
+      drawRocket();
 
-        function updateUI() {
-            scoreEl.innerText = score;
-            livesEl.innerText = '❤️'.repeat(lives);
-        }
+      if (!questionResolved && meteor.y > canvas.clientHeight - 88) {
+        resolveQuestion('timeout');
+      }
 
-        function endGame() {
-            gameActive = false;
-            clearInterval(timerInterval);
-            playBeep(150, 0.5, 'square');
+      animationId = requestAnimationFrame(gameLoop);
+    }
 
-            const key = 'hiScore_' + grade;
-            const hi = parseInt(localStorage.getItem(key) || '0', 10);
-            if (score > hi) {
-                localStorage.setItem(key, score);
-                hiEl.innerText = score;
-            } else {
-                hiEl.innerText = hi;
-            }
+    ['click', 'touchstart'].forEach(evt => {
+      window.addEventListener(evt, ensureAudio, { passive: true });
+    });
 
-            document.getElementById('screen-result').classList.remove('hidden');
-            document.getElementById('res-score').innerText = score;
-
-            let stars = "⭐";
-            let msg = "Ayo belajar lagi!";
-            if (score >= 100) { stars = "⭐⭐⭐"; msg = "Luar Biasa! Kamu jenius!"; }
-            else if (score >= 50) { stars = "⭐⭐"; msg = "Hebat! Pertahankan!"; }
-
-            document.getElementById('res-stars').innerText = stars;
-            document.getElementById('res-msg').innerText = msg;
-        }
-
-        function gameLoop() {
-            if (!gameActive) return;
-
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            meteor.y += meteor.speed;
-
-            // Meteor
-            ctx.save();
-            ctx.translate(meteor.x, meteor.y);
-            ctx.fillStyle = '#6B7280';
-            ctx.beginPath();
-            meteor.shape.forEach((rMul, i) => {
-                let a = (i / meteor.shape.length) * Math.PI * 2;
-                let r = 45 * rMul;
-                if (i === 0) ctx.moveTo(r * Math.cos(a), r * Math.sin(a));
-                else ctx.lineTo(r * Math.cos(a), r * Math.sin(a));
-            });
-            ctx.closePath();
-            ctx.fill();
-            ctx.strokeStyle = '#374151';
-            ctx.lineWidth = 4;
-            ctx.stroke();
-
-            // Craters
-            ctx.fillStyle = 'rgba(0,0,0,0.2)';
-            [{x:-15,y:-10,r:10}, {x:10,y:15,r:8}, {x:20,y:-5,r:6}].forEach(c => {
-                ctx.beginPath();
-                ctx.arc(c.x, c.y, c.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Soal
-            ctx.fillStyle = 'white';
-            ctx.font = 'bold 22px Poppins';
-            ctx.textAlign = 'center';
-            ctx.fillText(currentProblem.text, 0, 7);
-
-            // Timer Bar
-            const tw = (timer / 10) * 80;
-            ctx.fillStyle = timer < 3 ? 'red' : '#FBBF24';
-            ctx.fillRect(-40, 60, tw, 8);
-            ctx.strokeStyle = 'black';
-            ctx.strokeRect(-40, 60, 80, 8);
-            ctx.restore();
-
-            // Lasers
-            lasers.forEach((l, i) => {
-                l.y -= 15;
-                ctx.strokeStyle = '#EF4444';
-                ctx.lineWidth = 4;
-                ctx.beginPath();
-                ctx.moveTo(l.x, l.y);
-                ctx.lineTo(l.x, l.y - 20);
-                ctx.stroke();
-
-                if (l.y < meteor.y + 40) {
-                    lasers.splice(i, 1);
-                    score += 10;
-                    updateUI();
-                    newQuestion();
-                }
-            });
-
-            // Rocket
-            ctx.font = '55px Arial';
-            ctx.textAlign = 'center';
-            ctx.fillText('🚀', canvas.width / 2, canvas.height - 30);
-
-            if (meteor.y > canvas.height - 80) wrongAnswer();
-            else animationId = requestAnimationFrame(gameLoop);
-        }
-    </script>
+    updateUI();
+  </script>
 </body>
 </html>
