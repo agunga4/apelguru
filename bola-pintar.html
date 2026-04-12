@@ -40,9 +40,10 @@
 
     .app {
       width: 100%;
-      max-width: 500px;
-      height: 100dvh;
-      max-height: 900px;
+      max-width: 640px;                 /* sedikit lebih wide */
+      height: min(100dvh, 900px);
+      aspect-ratio: 9 / 16;             /* standar lapangan vertikal */
+      margin-inline: auto;
       position: relative;
       background: linear-gradient(to bottom, #1e3a8a 0%, #3b82f6 40%, #0f172a 100%);
       overflow: hidden;
@@ -59,26 +60,33 @@
       justify-content: space-between;
       align-items: flex-start;
       pointer-events: none;
+      gap: 8px;
+    }
+
+    .hud-row {
+      display: flex;
+      gap: 8px;
     }
 
     .hud-box {
       background: rgba(255,255,255,0.95);
       border: var(--border);
       border-radius: 14px;
-      padding: 8px 12px;
+      padding: 6px 10px;
       text-align: center;
       box-shadow: 0 6px 0 #0f172a;
-      min-width: 80px;
+      min-width: 70px;
     }
 
     .hud-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-weight: 800;
       opacity: 0.6;
+      letter-spacing: .03em;
     }
 
     .hud-val {
-      font-size: 1.1rem;
+      font-size: 1rem;
       font-weight: 800;
       margin-top: 2px;
     }
@@ -86,17 +94,17 @@
     /* QUESTION BANNER */
     .question-banner {
       position: absolute;
-      top: max(85px, calc(env(safe-area-inset-top) + 75px));
+      top: max(88px, calc(env(safe-area-inset-top) + 78px));
       left: 50%;
       transform: translateX(-50%);
       background: rgba(255,255,255,0.98);
       border: var(--border);
       border-radius: 20px;
-      padding: 12px 24px;
+      padding: 10px 24px;
       text-align: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.3);
       z-index: 20;
-      width: 85%;
+      width: 82%;
     }
 
     .question-banner .small {
@@ -108,7 +116,7 @@
 
     .question-banner .big {
       font-family: 'Anton', sans-serif;
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       color: var(--ink);
       margin-top: 2px;
       line-height: 1;
@@ -162,7 +170,7 @@
       bottom: calc(30px + env(safe-area-inset-bottom));
       width: 100%;
       text-align: center;
-      color: rgba(255,255,255,0.7);
+      color: rgba(255,255,255,0.8);
       font-size: 0.9rem;
       font-weight: 700;
       pointer-events: none;
@@ -172,7 +180,7 @@
 
     @keyframes pulse {
       0% { opacity: 0.4; transform: translateY(0); }
-      100% { opacity: 0.9; transform: translateY(-4px); }
+      100% { opacity: 0.95; transform: translateY(-4px); }
     }
 
     /* MENUS */
@@ -247,13 +255,25 @@
 
   <div class="app">
     <header>
-      <div class="hud-box">
-        <div class="hud-label">SKOR</div>
-        <div class="hud-val" id="scoreVal">0</div>
+      <div class="hud-row">
+        <div class="hud-box">
+          <div class="hud-label">LEVEL</div>
+          <div class="hud-val" id="levelVal">1</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">SKOR</div>
+          <div class="hud-val" id="scoreVal">0</div>
+        </div>
       </div>
-      <div class="hud-box">
-        <div class="hud-label">NYAWA</div>
-        <div class="hud-val" id="livesVal">❤️❤️❤️</div>
+      <div class="hud-row">
+        <div class="hud-box">
+          <div class="hud-label">WAKTU</div>
+          <div class="hud-val" id="timeVal">8</div>
+        </div>
+        <div class="hud-box">
+          <div class="hud-label">NYAWA</div>
+          <div class="hud-val" id="livesVal">❤️❤️❤️</div>
+        </div>
       </div>
     </header>
 
@@ -286,7 +306,8 @@
       <div class="panel">
         <h1>GAME OVER</h1>
         <p>Skor Akhir Kamu:</p>
-        <div style="font-family: 'Anton'; font-size: 4rem; color: #1e3a8a; line-height: 1; margin-bottom: 24px;" id="finalScoreVal">0</div>
+        <div style="font-family: 'Anton'; font-size: 4rem; color: #1e3a8a; line-height: 1; margin-bottom: 12px;" id="finalScoreVal">0</div>
+        <p id="finalLevelText">Kamu mencapai Level 1</p>
         <button class="btn btn-primary" onclick="startGame()">Main Lagi</button>
       </div>
     </div>
@@ -299,16 +320,18 @@
 
     let width, height;
     let score = 0, lives = 3;
+    let level = 1;
+    let correctForLevel = 0;
+
     let gameActive = false;
     let animationId;
     let currentProblem = null;
 
     // 3D Perspective state
     let hoops = [];
-    const HOOP_Y_RATIO = 0.38; 
-    const HOOP_SIZE = 80;
+    const HOOP_Y_RATIO = 0.38;
 
-    // Ball state (tambahan: phase)
+    // Ball state
     let ball = {
       x: 0,
       y: 0,
@@ -320,10 +343,17 @@
       startY: 0
     };
 
-    // Swipe state
+    // Swipe + projection
     let swipeStart = null;
+    let aimLine = null; // {startX,startY,endX,endY,alpha}
+
+    // Partikel + audio
     let particles = [];
     let audioCtx = null;
+
+    // Timer
+    let timeLeft = 8;
+    let timeInterval = null;
 
     function initAudio() {
       if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -380,7 +410,7 @@
       ball.progress = 0;
       ball.scale = 1.1;
       ball.x = width / 2;
-      ball.y = height * 0.78; // selalu muncul di POV tangan
+      ball.y = height * 0.78;
       ball.targetHoop = null;
     }
 
@@ -417,21 +447,49 @@
       }));
     }
 
+    function startTimer() {
+      clearInterval(timeInterval);
+      timeLeft = Math.max(4, 8 - (level - 1)); // makin tinggi level, waktu makin pendek (min 4)
+      document.getElementById('timeVal').innerText = timeLeft;
+
+      timeInterval = setInterval(() => {
+        if (!gameActive) { clearInterval(timeInterval); return; }
+        timeLeft -= 1;
+        document.getElementById('timeVal').innerText = Math.max(0, timeLeft);
+        if (timeLeft <= 0) {
+          clearInterval(timeInterval);
+          // auto salah kalau belum menembak
+          if (ball.phase === 'ready') {
+            const correct = hoops.find(h => h.isCorrect);
+            ball.targetHoop = correct;
+            ball.phase = 'in-hoop';   // treat sebagai miss (kita paksa salah)
+            ball.progress = 0;
+            processHit({ ...correct, isCorrect: false });
+          }
+        }
+      }, 1000);
+    }
+
     function nextRound() {
       currentProblem = generateProblem();
       document.getElementById('questionText').innerText = currentProblem.q;
       layoutHoops();
       resetBallPos();
+      aimLine = null;
       document.getElementById('hintText').style.display = 'block';
+      startTimer();
     }
 
     function startGame() {
       initAudio();
       score = 0;
       lives = 3;
+      level = 1;
+      correctForLevel = 0;
       gameActive = true;
       document.getElementById('scoreVal').innerText = score;
       document.getElementById('livesVal').innerText = '❤️❤️❤️';
+      document.getElementById('levelVal').innerText = level;
       document.getElementById('startScreen').classList.add('hidden');
       document.getElementById('overScreen').classList.add('hidden');
       resize();
@@ -456,24 +514,33 @@
       document.getElementById('revealAnswer').innerText = hoop.val;
       
       if (hoop.isCorrect) {
-        score += 10;
-        document.getElementById('scoreVal').innerText = score;
+        score += 10 * level;
+        correctForLevel++;
         document.getElementById('revealStatus').innerText = 'BENAR!';
         document.getElementById('revealStatus').style.color = '#86efac';
         playSound('correct');
         spawnParticles(hoop.x, hoop.y, '#fde047');
-        hoops.forEach(h => { if(h === hoop) h.flash = '#22c55e'; });
+        hoops.forEach(h => { if(h.val === hoop.val) h.flash = '#22c55e'; });
+
+        if (correctForLevel >= 5) {
+          level++;
+          correctForLevel = 0;
+          document.getElementById('levelVal').innerText = level;
+        }
       } else {
+        correctForLevel = 0;
         lives--;
         document.getElementById('livesVal').innerText = lives > 0 ? '❤️'.repeat(lives) : '💔';
         document.getElementById('revealStatus').innerText = 'SALAH!';
         document.getElementById('revealStatus').style.color = '#fca5a5';
         playSound('wrong');
         spawnParticles(hoop.x, hoop.y, '#ef4444');
-        hoops.forEach(h => { if(h === hoop) h.flash = '#ef4444'; });
+        hoops.forEach(h => { if(h.val === hoop.val) h.flash = '#ef4444'; });
       }
 
+      document.getElementById('scoreVal').innerText = score;
       reveal.classList.add('show');
+      clearInterval(timeInterval);
 
       setTimeout(() => {
         reveal.classList.remove('show');
@@ -482,6 +549,7 @@
         if (lives <= 0) {
           gameActive = false;
           document.getElementById('finalScoreVal').innerText = score;
+          document.getElementById('finalLevelText').innerText = `Kamu mencapai Level ${level}`;
           document.getElementById('overScreen').classList.remove('hidden');
         } else {
           nextRound();
@@ -497,7 +565,8 @@
       const horizonY = height * 0.45;
 
       // Floor
-      ctx.fillStyle = '#c2410c';
+      const floorColor = level >= 4 ? '#b45309' : '#c2410c';
+      ctx.fillStyle = floorColor;
       ctx.beginPath();
       ctx.moveTo(0, horizonY);
       ctx.lineTo(width, horizonY);
@@ -574,10 +643,23 @@
       });
     }
 
+    function drawProjectionLine() {
+      if (!aimLine) return;
+      ctx.save();
+      ctx.strokeStyle = 'rgba(248,250,252,' + aimLine.alpha + ')';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([10, 8]);
+      ctx.beginPath();
+      ctx.moveTo(aimLine.startX, aimLine.startY);
+      ctx.lineTo(aimLine.endX, aimLine.endY);
+      ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.restore();
+    }
+
     function drawBall() {
       const r = 35 * ball.scale;
 
-      // shadow hanya saat di tangan (ready)
       if (ball.phase === 'ready') {
         ctx.fillStyle = 'rgba(0,0,0,0.4)';
         ctx.beginPath();
@@ -634,10 +716,7 @@
     }
 
     function loop() {
-      if (!gameActive) {
-        animationId = null;
-        return;
-      }
+      if (!gameActive) { animationId = null; return; }
 
       // update ball phase
       if (ball.phase === 'flying') {
@@ -677,6 +756,7 @@
 
       draw3DCourt();
       drawHoops();
+      drawProjectionLine();
       drawBall();
       drawHoopFronts();
       drawParticles();
@@ -694,6 +774,29 @@
       if (!gameActive || ball.phase !== 'ready') return;
       initAudio();
       swipeStart = getPointerPos(e);
+      aimLine = null;
+    }
+
+    function moveSwipe(e) {
+      if (!gameActive || ball.phase !== 'ready' || !swipeStart) return;
+      const pos = getPointerPos(e);
+      const dx = pos.x - swipeStart.x;
+      const dy = pos.y - swipeStart.y;
+
+      if (dy > -10) { aimLine = null; return; }
+
+      const len = Math.hypot(dx, dy) || 1;
+      const nx = dx / len;
+      const ny = dy / len;
+      const projLen = 260;
+
+      aimLine = {
+        startX: ball.x,
+        startY: ball.y,
+        endX: ball.x + nx * projLen,
+        endY: ball.y + ny * projLen,
+        alpha: 0.55
+      };
     }
 
     function endSwipe(e) {
@@ -707,7 +810,7 @@
       const dy = endY - swipeStart.y;
       swipeStart = null;
 
-      if (dy > -30) return;
+      if (dy > -30) { aimLine = null; return; }
 
       document.getElementById('hintText').style.display = 'none';
 
@@ -728,17 +831,19 @@
       ball.startX = ball.x;
       ball.startY = ball.y;
       ball.targetHoop = target;
+      aimLine = null;
       playSound('shoot');
     }
 
     window.addEventListener('mousedown', startSwipe);
+    window.addEventListener('mousemove', moveSwipe);
     window.addEventListener('mouseup', endSwipe);
     window.addEventListener('touchstart', startSwipe, {passive: false});
-    window.addEventListener('touchend', endSwipe, {passive: false});
-
-    canvas.addEventListener('touchmove', (e) => {
+    window.addEventListener('touchmove', (e) => {
+      moveSwipe(e);
       if(gameActive && ball.phase === 'ready') e.preventDefault();
     }, {passive: false});
+    window.addEventListener('touchend', endSwipe, {passive: false});
   </script>
 </body>
 </html>
