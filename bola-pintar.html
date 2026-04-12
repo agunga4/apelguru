@@ -425,9 +425,7 @@
       <div class="screen" id="menuScreen">
         <div class="panel">
           <h2>BOLA PINTAR</h2>
-          <p>
-            Tembakkan bola ke salah satu ring. Jawaban baru dibuka setelah bola masuk.
-          </p>
+          <p>Tembakkan bola ke ring dengan jawaban yang kamu pilih.</p>
 
           <div class="mode-grid">
             <button class="mode-btn active" data-mode="mix">Mode Campuran</button>
@@ -653,7 +651,7 @@
 
       revealTimeout = setTimeout(() => {
         revealBox.classList.remove('show');
-      }, 850);
+      }, 900);
     }
 
     function generateProblem() {
@@ -705,7 +703,7 @@
         x: xs[i],
         y: hoopY + (i === 1 ? -4 : 8),
         rimR: clamp(world.width * 0.08, 32, 40),
-        hiddenValue: value,
+        value,
         isCorrect: value === currentProblem.answer,
         side: i === 0 ? 'left' : i === 1 ? 'center' : 'right',
         boardW: 16,
@@ -815,18 +813,14 @@
       if (perfect) perfectSwish++;
 
       addParticles(shot.x, shot.y, perfect ? '#fde047' : '#22c55e', perfect ? 24 : 18);
-      addPopup(perfect ? `SWISH! +${gain}` : `+${gainedOr(gain)}`, shot.x, shot.y - 16, perfect ? '#fde047' : '#bbf7d0');
-      showReveal(hoop.hiddenValue, true);
+      addPopup(perfect ? `SWISH! +${gain}` : `+${gain}`, shot.x, shot.y - 16, perfect ? '#fde047' : '#bbf7d0');
+      showReveal(hoop.value, true);
       scoreSound(perfect);
       updateHUD();
 
       setTimeout(() => {
         if (gameRunning) nextRound();
       }, 900);
-    }
-
-    function gainedOr(v) {
-      return v;
     }
 
     function registerWrong(hoop = null, reason = 'MISS!') {
@@ -838,7 +832,7 @@
 
       if (hoop) {
         hoop.flash = { color: '#ef4444', timer: 0.35 };
-        showReveal(hoop.hiddenValue, false);
+        showReveal(hoop.value, false);
       } else {
         hideReveal();
       }
@@ -925,7 +919,7 @@
         ctx.strokeStyle = '#09121c';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.roundRect(x - hoop.rimR - 40, y - 48, 18, 90, 6);
+        roundRectPath(ctx, x - hoop.rimR - 40, y - 48, 18, 90, 6);
         ctx.fill();
         ctx.stroke();
       } else {
@@ -936,7 +930,7 @@
         ctx.strokeStyle = '#09121c';
         ctx.lineWidth = 3;
         ctx.beginPath();
-        ctx.roundRect(x + hoop.rimR + 8, y - 48, 18, 90, 6);
+        roundRectPath(ctx, x + hoop.rimR + 8, y - 48, 18, 90, 6);
         ctx.fill();
         ctx.stroke();
       }
@@ -957,136 +951,131 @@
         ctx.stroke();
       }
 
+      /* Angka jawaban tampil netral, tanpa warna pembeda benar/salah */
       ctx.beginPath();
-      ctx.roundRect(x - 38, y - 95, 76, 36, 14);
-      ctx.fillStyle = 'rgba(255,255,255,0.98)';
+      roundRectPath(ctx, x - 44, y - 106, 88, 42, 16);
+      ctx.fillStyle = '#f8fafc';
       ctx.fill();
-      ctx.strokeStyle = '#09121c';
       ctx.lineWidth = 3;
+      ctx.strokeStyle = '#09121c';
       ctx.stroke();
 
       ctx.fillStyle = '#09121c';
-      ctx.font = '800 16px "Plus Jakarta Sans"';
+      ctx.font = '800 18px "Plus Jakarta Sans"';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('?', x, y - 76);
+      ctx.fillText(String(hoop.value), x, y - 85);
 
       ctx.restore();
     }
 
     function drawLauncher() {
       ctx.save();
-
-      ctx.beginPath();
-      ctx.ellipse(launcher.x, launcher.y + 18, 24, 8, 0, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(0,0,0,0.15)';
+      ctx.beginPath();
+      ctx.ellipse(launcher.x, launcher.y + 18, 26, 10, 0, 0, Math.PI * 2);
       ctx.fill();
 
+      drawBasketball(launcher.x, launcher.y, launcher.r, 0);
+
       if (aiming) {
-        ctx.beginPath();
-        ctx.moveTo(launcher.x, launcher.y);
-        ctx.lineTo(aim.currentX, aim.currentY);
-        ctx.strokeStyle = 'rgba(9,18,28,0.42)';
-        ctx.lineWidth = 4;
+        const dx = aim.startX - aim.currentX;
+        const dy = aim.startY - aim.currentY;
+        const power = clamp(Math.hypot(dx, dy), 0, 130);
+
+        ctx.strokeStyle = 'rgba(255,255,255,0.38)';
+        ctx.lineWidth = 3;
         ctx.setLineDash([8, 8]);
+
+        const previewVx = dx * 0.12;
+        const previewVy = dy * 0.12;
+
+        ctx.beginPath();
+        for (let i = 0; i < 22; i++) {
+          const t = i * 0.18;
+          const px = launcher.x + previewVx * t * 8;
+          const py = launcher.y + previewVy * t * 8 + (world.gravity * 42) * t * t;
+          if (i === 0) ctx.moveTo(px, py);
+          else ctx.lineTo(px, py);
+        }
         ctx.stroke();
         ctx.setLineDash([]);
 
-        ctx.fillStyle = 'rgba(9,18,28,0.72)';
         ctx.beginPath();
-        ctx.roundRect(launcher.x - 54, launcher.y + 34, 108, 12, 999);
+        ctx.roundRect?.(launcher.x - 58, launcher.y + 34, 116, 12, 999);
+        if (!ctx.roundRect) roundRectPath(ctx, launcher.x - 58, launcher.y + 34, 116, 12, 999);
+        ctx.fillStyle = 'rgba(9,18,28,0.18)';
         ctx.fill();
 
-        ctx.fillStyle = aim.power > 0.7 ? '#22c55e' : aim.power > 0.4 ? '#facc15' : '#ef4444';
         ctx.beginPath();
-        ctx.roundRect(launcher.x - 54, launcher.y + 34, 108 * aim.power, 12, 999);
-        ctx.fill();
-      }
-
-      drawBasketball(launcher.x, launcher.y, launcher.r, 0);
-      ctx.restore();
-    }
-
-    function drawPreview() {
-      if (!aiming) return;
-
-      const dx = aim.startX - aim.currentX;
-      const dy = aim.startY - aim.currentY;
-      const dist = clamp(Math.hypot(dx, dy), 12, 155);
-      const scale = dist / 155;
-
-      let vx = dx * 0.13 * (1.0 + scale * 0.8);
-      let vy = dy * 0.13 * (1.0 + scale * 0.8);
-
-      vx = clamp(vx, -11.5, 11.5);
-      vy = clamp(vy, -17.5, -6.5);
-
-      let px = launcher.x;
-      let py = launcher.y;
-
-      ctx.save();
-      ctx.fillStyle = 'rgba(255,255,255,0.34)';
-      for (let i = 0; i < 22; i++) {
-        vy += world.gravity * 0.22;
-        px += vx * 0.22;
-        py += vy * 0.22;
-        ctx.beginPath();
-        ctx.arc(px, py, Math.max(2, 5 - i * 0.15), 0, Math.PI * 2);
+        ctx.roundRect?.(launcher.x - 58, launcher.y + 34, power * 0.89, 12, 999);
+        if (!ctx.roundRect) roundRectPath(ctx, launcher.x - 58, launcher.y + 34, power * 0.89, 12, 999);
+        ctx.fillStyle = power > 94 ? '#ef4444' : power > 58 ? '#f59e0b' : '#22c55e';
         ctx.fill();
       }
+
       ctx.restore();
     }
 
     function drawShot() {
       if (!shot.active) return;
 
-      for (const t of shot.trail) {
+      for (let i = 0; i < shot.trail.length; i++) {
+        const t = shot.trail[i];
         ctx.beginPath();
-        ctx.arc(t.x, t.y, shot.r * 0.55, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(255,255,255,${0.11 * t.a})`;
+        ctx.arc(t.x, t.y, Math.max(2, shot.r * (i / shot.trail.length) * 0.55), 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${i / shot.trail.length * 0.18})`;
         ctx.fill();
       }
 
       drawBasketball(shot.x, shot.y, shot.r, performance.now() * 0.01);
     }
 
-    function drawParticles() {
-      for (const p of particles) {
-        ctx.save();
-        ctx.globalAlpha = p.life;
+    function drawParticles(dt) {
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.06;
+        p.life -= dt * 0.0018;
+
+        ctx.globalAlpha = Math.max(0, p.life);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = p.color;
         ctx.fill();
-        ctx.restore();
+        ctx.globalAlpha = 1;
+
+        if (p.life <= 0) particles.splice(i, 1);
       }
     }
 
-    function drawPopups() {
-      for (const p of popups) {
-        ctx.save();
-        ctx.globalAlpha = p.life;
-        ctx.font = '800 22px "Plus Jakarta Sans"';
-        ctx.textAlign = 'center';
-        ctx.strokeStyle = 'rgba(0,0,0,0.34)';
-        ctx.lineWidth = 4;
+    function drawPopups(dt) {
+      for (let i = popups.length - 1; i >= 0; i--) {
+        const p = popups[i];
+        p.y += p.vy;
+        p.life -= dt * 0.0015;
+
+        ctx.globalAlpha = Math.max(0, p.life);
         ctx.fillStyle = p.color;
-        ctx.strokeText(p.text, p.x, p.y);
+        ctx.font = '800 20px "Plus Jakarta Sans"';
+        ctx.textAlign = 'center';
         ctx.fillText(p.text, p.x, p.y);
-        ctx.restore();
+        ctx.globalAlpha = 1;
+
+        if (p.life <= 0) popups.splice(i, 1);
       }
     }
 
     function updateShot(dt) {
       if (!shot.active) return;
 
-      shot.vy += world.gravity * dt * 60;
-      shot.x += shot.vx * dt * 60;
-      shot.y += shot.vy * dt * 60;
+      shot.vy += world.gravity * (dt / 16.67);
+      shot.x += shot.vx * (dt / 16.67);
+      shot.y += shot.vy * (dt / 16.67);
 
-      shot.trail.push({ x: shot.x, y: shot.y, a: 1 });
+      shot.trail.push({ x: shot.x, y: shot.y });
       if (shot.trail.length > 14) shot.trail.shift();
-      shot.trail.forEach(t => t.a *= 0.94);
 
       if (shot.x < shot.r) {
         shot.x = shot.r;
@@ -1101,228 +1090,187 @@
         const leftRim = { x: hoop.x - hoop.rimR, y: hoop.y };
         const rightRim = { x: hoop.x + hoop.rimR, y: hoop.y };
 
-        const d1 = Math.hypot(shot.x - leftRim.x, shot.y - leftRim.y);
-        const d2 = Math.hypot(shot.x - rightRim.x, shot.y - rightRim.y);
+        const dl = Math.hypot(shot.x - leftRim.x, shot.y - leftRim.y);
+        const dr = Math.hypot(shot.x - rightRim.x, shot.y - rightRim.y);
 
-        if (d1 < shot.r + 7) {
-          const a = Math.atan2(shot.y - leftRim.y, shot.x - leftRim.x);
-          shot.x = leftRim.x + Math.cos(a) * (shot.r + 7);
-          shot.y = leftRim.y + Math.sin(a) * (shot.r + 7);
-          shot.vx = Math.cos(a) * 3.2;
-          shot.vy = Math.sin(a) * 3.2;
+        if (dl < shot.r + 6) {
+          shot.vx = -Math.abs(shot.vx) * 0.88;
+          shot.vy = -Math.abs(shot.vy) * 0.72;
+        }
+        if (dr < shot.r + 6) {
+          shot.vx = Math.abs(shot.vx) * 0.88;
+          shot.vy = -Math.abs(shot.vy) * 0.72;
         }
 
-        if (d2 < shot.r + 7) {
-          const a = Math.atan2(shot.y - rightRim.y, shot.x - rightRim.x);
-          shot.x = rightRim.x + Math.cos(a) * (shot.r + 7);
-          shot.y = rightRim.y + Math.sin(a) * (shot.r + 7);
-          shot.vx = Math.cos(a) * 3.2;
-          shot.vy = Math.sin(a) * 3.2;
-        }
-
-        const boardLeft = hoop.side === 'right'
-          ? hoop.x - hoop.rimR - 40
-          : hoop.x + hoop.rimR + 8;
-        const boardRight = boardLeft + 18;
-        const boardTop = hoop.y - 48;
-        const boardBottom = hoop.y + 42;
+        const boardLeftX = hoop.side === 'right' ? hoop.x - hoop.rimR - 40 : hoop.x + hoop.rimR + 8;
+        const boardRightX = boardLeftX + 18;
+        const boardTopY = hoop.y - 48;
+        const boardBottomY = hoop.y + 42;
 
         if (
-          shot.x + shot.r > boardLeft &&
-          shot.x - shot.r < boardRight &&
-          shot.y > boardTop &&
-          shot.y < boardBottom
+          shot.x + shot.r > boardLeftX &&
+          shot.x - shot.r < boardRightX &&
+          shot.y + shot.r > boardTopY &&
+          shot.y - shot.r < boardBottomY
         ) {
-          if (hoop.side === 'right') {
-            shot.x = boardRight + shot.r;
-            shot.vx = Math.abs(shot.vx) * 0.78;
-          } else {
-            shot.x = boardLeft - shot.r;
-            shot.vx = -Math.abs(shot.vx) * 0.78;
-          }
+          if (shot.x < hoop.x) shot.x = boardLeftX - shot.r;
+          else shot.x = boardRightX + shot.r;
+          shot.vx *= -0.84;
         }
 
-        const goal =
+        const enteredFromTop =
           shot.vy > 0 &&
-          shot.y > hoop.y - 8 &&
+          shot.y > hoop.y + 6 &&
           shot.y < hoop.y + 32 &&
-          shot.x > hoop.x - hoop.rimR + 7 &&
-          shot.x < hoop.x + hoop.rimR - 7;
+          shot.x > hoop.x - hoop.rimR + 4 &&
+          shot.x < hoop.x + hoop.rimR - 4;
 
-        if (goal && !shot.scored) {
-          shot.scored = true;
-          if (hoop.isCorrect) {
-            const perfect = Math.abs(shot.x - hoop.x) < hoop.rimR * 0.34 && Math.abs(shot.vx) < 2.1;
-            registerCorrect(hoop, perfect);
-          } else {
-            registerWrong(hoop, 'SALAH');
-          }
+        if (!roundResolved && enteredFromTop) {
+          const perfect = Math.abs(shot.x - hoop.x) < hoop.rimR * 0.28;
+          if (hoop.isCorrect) registerCorrect(hoop, perfect);
+          else registerWrong(hoop, 'SALAH!');
           return;
         }
       }
 
-      if (shot.y > world.floorY + 10) {
+      if (!roundResolved && shot.y > world.floorY - shot.r) {
+        registerWrong(null, 'MELESET!');
+        return;
+      }
+
+      if (!roundResolved && (shot.y > world.height + 40 || shot.x < -40 || shot.x > world.width + 40)) {
         registerWrong(null, 'MISS!');
       }
     }
 
-    function updateWorld(dt) {
-      if (!gameRunning) return;
-
-      if (!roundResolved) {
-        shotClock -= dt;
-        if (shotClock <= 0) {
-          shotClock = 0;
-          registerWrong(null, 'WAKTU HABIS!');
-        }
+    function updateRoundClock(dt) {
+      if (roundResolved) return;
+      shotClock -= dt / 1000;
+      if (shotClock <= 0) {
+        shotClock = 0;
+        registerWrong(null, 'WAKTU HABIS!');
       }
+    }
 
-      particles = particles.filter(p => p.life > 0.03);
-      particles.forEach(p => {
-        p.x += p.vx;
-        p.y += p.vy;
-        p.vy += 0.04;
-        p.life *= 0.94;
-      });
-
-      popups = popups.filter(p => p.life > 0.03);
-      popups.forEach(p => {
-        p.y += p.vy;
-        p.life *= 0.97;
-      });
-
+    function updateFlashes(dt) {
       hoops.forEach(h => {
         if (h.flash) {
-          h.flash.timer -= dt;
+          h.flash.timer -= dt / 1000;
           if (h.flash.timer <= 0) h.flash = null;
         }
       });
-
-      updateShot(dt);
-      updateHUD();
     }
 
-    function draw() {
+    function drawScene(dt) {
       ctx.clearRect(0, 0, world.width, world.height);
       drawCourt();
       hoops.forEach(drawHoop);
-      drawPreview();
-      drawShot();
       drawLauncher();
-      drawParticles();
-      drawPopups();
+      drawShot();
+      drawParticles(dt);
+      drawPopups(dt);
     }
 
     function loop(ts) {
-      if (!gameRunning) return;
-
-      const dt = Math.min(0.032, (ts - lastTime) / 1000 || 0.016);
+      const dt = Math.min(32, ts - lastTime);
       lastTime = ts;
 
-      updateWorld(dt);
-      draw();
-      animationId = requestAnimationFrame(loop);
-    }
-
-    function getPoint(e) {
-      const rect = canvas.getBoundingClientRect();
-      const p = e.touches ? e.touches[0] : e;
-      return {
-        x: p.clientX - rect.left,
-        y: p.clientY - rect.top
-      };
-    }
-
-    function onStart(e) {
-      if (!gameRunning || shot.active || roundResolved) return;
-      ensureAudio();
-
-      const p = getPoint(e);
-      const d = Math.hypot(p.x - launcher.x, p.y - launcher.y);
-      if (d <= launcher.r + 24) {
-        pointerPressed = true;
-        aiming = true;
-        aim.startX = launcher.x;
-        aim.startY = launcher.y;
-        aim.currentX = p.x;
-        aim.currentY = p.y;
-        aim.power = 0;
+      if (gameRunning) {
+        updateRoundClock(dt);
+        updateShot(dt);
+        updateFlashes(dt);
+        drawScene(dt);
+        updateHUD();
+        animationId = requestAnimationFrame(loop);
       }
     }
 
-    function onMove(e) {
-      if (!pointerPressed || !aiming) return;
-      const p = getPoint(e);
-      aim.currentX = p.x;
-      aim.currentY = p.y;
-
-      const dist = Math.hypot(aim.startX - aim.currentX, aim.startY - aim.currentY);
-      aim.power = clamp(dist / 155, 0, 1);
+    function pointerPos(evt) {
+      const rect = canvas.getBoundingClientRect();
+      const touch = evt.touches ? evt.touches[0] : evt;
+      return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+      };
     }
 
-    function shootBall() {
+    function canStartAim(pos) {
+      return Math.hypot(pos.x - launcher.x, pos.y - launcher.y) <= 42 && !shot.active && !roundResolved;
+    }
+
+    function onPointerDown(evt) {
+      if (!gameRunning) return;
+      ensureAudio();
+
+      const pos = pointerPos(evt);
+      if (!canStartAim(pos)) return;
+
+      evt.preventDefault();
+      pointerPressed = true;
+      aiming = true;
+      aim.startX = launcher.x;
+      aim.startY = launcher.y;
+      aim.currentX = pos.x;
+      aim.currentY = pos.y;
+    }
+
+    function onPointerMove(evt) {
+      if (!pointerPressed || !aiming) return;
+      const pos = pointerPos(evt);
+      aim.currentX = pos.x;
+      aim.currentY = pos.y;
+    }
+
+    function onPointerUp(evt) {
+      if (!pointerPressed || !aiming) return;
+      evt.preventDefault();
+
+      pointerPressed = false;
+      aiming = false;
+
       const dx = aim.startX - aim.currentX;
       const dy = aim.startY - aim.currentY;
-      const dist = clamp(Math.hypot(dx, dy), 14, 155);
-      const scale = dist / 155;
-
-      let vx = dx * 0.13 * (1.0 + scale * 0.8);
-      let vy = dy * 0.13 * (1.0 + scale * 0.8);
-
-      vx = clamp(vx, -11.5, 11.5);
-      vy = clamp(vy, -17.5, -6.5);
+      const power = clamp(Math.hypot(dx, dy), 12, 130);
 
       shot.active = true;
       shot.scored = false;
       shot.x = launcher.x;
       shot.y = launcher.y;
-      shot.vx = vx;
-      shot.vy = vy;
+      shot.vx = dx * 0.115;
+      shot.vy = dy * 0.115 - Math.min(2.5, power * 0.01);
       shot.trail = [];
 
-      beep(300, 0.08, 'square', 0.05);
+      beep(420, 0.05, 'triangle', 0.04);
     }
 
-    function onEnd() {
-      if (!pointerPressed || !aiming) return;
-
-      pointerPressed = false;
-      if (aim.power > 0.06) shootBall();
-      aiming = false;
+    function roundRectPath(ctx, x, y, w, h, r) {
+      const rr = Math.min(r, w / 2, h / 2);
+      ctx.moveTo(x + rr, y);
+      ctx.lineTo(x + w - rr, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + rr);
+      ctx.lineTo(x + w, y + h - rr);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - rr, y + h);
+      ctx.lineTo(x + rr, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - rr);
+      ctx.lineTo(x, y + rr);
+      ctx.quadraticCurveTo(x, y, x + rr, y);
     }
-
-    canvas.addEventListener('mousedown', onStart);
-    canvas.addEventListener('mousemove', onMove);
-    window.addEventListener('mouseup', onEnd);
-
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      onStart(e);
-    }, { passive: false });
-
-    canvas.addEventListener('touchmove', (e) => {
-      e.preventDefault();
-      onMove(e);
-    }, { passive: false });
-
-    canvas.addEventListener('touchend', (e) => {
-      e.preventDefault();
-      onEnd();
-    }, { passive: false });
 
     startBtn.addEventListener('click', startGame);
     restartBtn.addEventListener('click', startGame);
     menuBtn.addEventListener('click', () => {
       overScreen.classList.add('hidden');
       menuScreen.classList.remove('hidden');
-      gameRunning = false;
-      cancelAnimationFrame(animationId);
-      clearTimeout(revealTimeout);
-      hideReveal();
     });
 
-    currentProblem = generateProblem();
-    questionText.textContent = currentProblem.text;
+    canvas.addEventListener('mousedown', onPointerDown);
+    canvas.addEventListener('mousemove', onPointerMove);
+    window.addEventListener('mouseup', onPointerUp);
+
+    canvas.addEventListener('touchstart', onPointerDown, { passive: false });
+    canvas.addEventListener('touchmove', onPointerMove, { passive: false });
+    window.addEventListener('touchend', onPointerUp, { passive: false });
+
     resizeCanvas();
     updateHUD();
   </script>
