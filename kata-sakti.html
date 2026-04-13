@@ -330,7 +330,7 @@
       box-shadow: 0 2px 0 #111827;
     }
 
-    /* ===== Overlay start & end menu ===== */
+    /* === Overlay start & end menu === */
     .overlay {
       position: absolute;
       inset: 0;
@@ -476,9 +476,650 @@
   </style>
 </head>
 <body>
-  <!-- HTML & JS PERSIS SAMA DENGAN YANG AGUNG KIRIM, TIDAK DIUBAH -->
-  <!-- Mulai dari <main class="app"> sampai </script> sama; hanya CSS di atas yang disesuaikan -->
-  <!-- Paste di sini seluruh bagian <main ...> dan <script> yang sudah Agung punya -->
-  <!-- (untuk menghemat ruang, bagian itu tidak saya ulang lagi karena tidak berubah) -->
+  <main class="app">
+    <header class="topbar">
+      <div class="brand">
+        <h1 class="brand-title">KATA SAKTI ULTRA</h1>
+        <p class="brand-sub">Wordsearch seru + info singkat untuk anak.</p>
+      </div>
+      <button type="button" class="icon-btn" id="menuButton" title="Menu">
+        ☰
+      </button>
+    </header>
+
+    <section class="hud">
+      <div class="stat">
+        <span class="stat-label">Tema</span>
+        <span class="stat-value" id="statTheme">-</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Level</span>
+        <span class="stat-value" id="statLevel">-</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Mode</span>
+        <span class="stat-value" id="statMode">-</span>
+      </div>
+      <div class="stat">
+        <span class="stat-label">Waktu</span>
+        <span class="stat-value" id="statTime">00:00</span>
+      </div>
+    </section>
+
+    <div class="progress-wrap" id="timeBarWrap">
+      <div class="progress-bar" id="timeBar"></div>
+    </div>
+
+    <section class="panel">
+      <div class="mission">
+        <span class="badge" id="missionBadge">Pilih tema dan mulai permainan.</span>
+        <span class="badge" style="background:#e0f2fe;">🎯 0 / 0 kata</span>
+      </div>
+      <div class="learn-box">
+        <p class="learn-title" id="learnTitle">Belajar Kata</p>
+        <p class="learn-text" id="learnText">Setelah memilih kata, info singkat akan muncul di sini.</p>
+      </div>
+    </section>
+
+    <section class="grid-shell">
+      <div id="grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="word-list" id="wordList"></div>
+      <div class="controls">
+        <button type="button" class="btn primary" id="hintBtn">🔍 Petunjuk</button>
+        <button type="button" class="btn" id="shuffleBtn">🔁 Ulang Grid</button>
+        <button type="button" class="btn" id="newThemeBtn">🎨 Ganti Tema</button>
+        <button type="button" class="btn danger" id="resetBtn">⏱ Ulang Game</button>
+      </div>
+    </section>
+
+    <div class="overlay" id="startMenu">
+      <div class="menu-card">
+        <h2>KATA SAKTI ULTRA</h2>
+        <p>Game cari kata yang lebih seru, lebih rapi, dan lebih edukatif untuk anak-anak.</p>
+
+        <div class="menu-grid">
+          <div class="theme-card">
+            <strong>1. Pilih Tema</strong>
+            <div class="menu-row" id="themeOptions"></div>
+          </div>
+
+          <div class="theme-card">
+            <strong>2. Pilih Level</strong>
+            <div class="menu-row">
+              <button type="button" class="menu-btn" data-level="easy">MUDAH<br><span class="tiny">Grid 8x8, arah dasar</span></button>
+              <button type="button" class="menu-btn" data-level="medium">SEDANG<br><span class="tiny">Grid 10x10, diagonal</span></button>
+              <button type="button" class="menu-btn" data-level="hard">SULIT<br><span class="tiny">Grid 12x12, arah penuh</span></button>
+            </div>
+          </div>
+
+          <div class="theme-card">
+            <strong>3. Pilih Mode</strong>
+            <div class="menu-row">
+              <button type="button" class="menu-btn" data-mode="relax">SANTAI<br><span class="tiny">Tanpa timer</span></button>
+              <button type="button" class="menu-btn" data-mode="challenge">TANTANGAN<br><span class="tiny">Pakai timer</span></button>
+            </div>
+          </div>
+
+          <button type="button" class="menu-btn primary" id="playBtn">
+            ▶ MAINKAN SEKARANG
+          </button>
+        </div>
+
+        <div class="footer-note">Tips: cari kata dengan menggeser dari huruf pertama ke huruf terakhir.</div>
+      </div>
+    </div>
+
+    <div class="overlay" id="endMenu" hidden>
+      <div class="menu-card">
+        <h2 id="endTitle">Hebat!</h2>
+        <p id="endSummary">Kamu menyelesaikan permainan.</p>
+        <div style="margin:12px 0;" id="endStars" class="stars">
+          <span>★</span><span>★</span><span>★</span>
+        </div>
+        <div class="theme-card" style="margin-bottom:12px;">
+          <strong>Ringkasan</strong>
+          <p id="endBreakdown" style="margin-top:8px;"></p>
+        </div>
+        <div class="menu-row">
+          <button type="button" class="menu-btn primary" id="playAgainBtn">MAIN LAGI</button>
+          <button type="button" class="menu-btn" id="openMenuBtn">PILIH MENU</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const GAME_DATA = {
+      keluarga: {
+        label: "Keluarga",
+        icon: "👨‍👩‍👧",
+        words: [
+          { word: "MAMA", hint: "Ibu di rumah.", info: "MAMA artinya ibu. Kita harus sayang kepada mama." },
+          { word: "PAPA", hint: "Ayah di rumah.", info: "PAPA artinya ayah. Papa sering bekerja untuk keluarga." },
+          { word: "ADIK", hint: "Saudara yang lebih muda.", info: "ADIK adalah anggota keluarga yang lebih muda dari kita." },
+          { word: "KAKAK", hint: "Saudara yang lebih tua.", info: "KAKAK adalah saudara yang lebih tua." },
+          { word: "NENEK", hint: "Ibu dari ayah atau ibu.", info: "NENEK biasanya dipanggil oma atau nenek." },
+          { word: "KAKEK", hint: "Ayah dari ayah atau ibu.", info: "KAKEK biasanya dipanggil opa atau kakek." },
+          { word: "PAMAN", hint: "Saudara laki-laki dari orang tua.", info: "PAMAN adalah saudara laki-laki dari ayah atau ibu." },
+          { word: "BIBI", hint: "Saudara perempuan dari orang tua.", info: "BIBI adalah saudara perempuan dari ayah atau ibu." }
+        ]
+      },
+      sekolah: {
+        label: "Sekolah",
+        icon: "🏫",
+        words: [
+          { word: "BUKU", hint: "Dibaca saat belajar.", info: "BUKU dipakai untuk membaca dan belajar." },
+          { word: "GURU", hint: "Mengajar di kelas.", info: "GURU membantu murid belajar di sekolah." },
+          { word: "MURID", hint: "Belajar di kelas.", info: "MURID adalah anak yang belajar di sekolah." },
+          { word: "PAPAN", hint: "Tempat menulis di depan kelas.", info: "PAPAN tulis dipakai guru untuk menjelaskan pelajaran." },
+          { word: "KAPUR", hint: "Untuk menulis di papan.", info: "KAPUR dipakai untuk menulis di papan tulis." },
+          { word: "PENSIL", hint: "Alat tulis kecil.", info: "PENSIL dipakai untuk menulis dan menggambar." },
+          { word: "TAS", hint: "Membawa perlengkapan sekolah.", info: "TAS dipakai untuk membawa buku dan alat tulis." },
+          { word: "KELAS", hint: "Ruang belajar bersama.", info: "KELAS adalah tempat murid dan guru belajar bersama." }
+        ]
+      },
+      alam: {
+        label: "Alam",
+        icon: "🌿",
+        words: [
+          { word: "AWAN", hint: "Ada di langit.", info: "AWAN terlihat di langit dan bisa membawa hujan." },
+          { word: "HUJAN", hint: "Air turun dari langit.", info: "HUJAN adalah air yang turun dari awan." },
+          { word: "ANGIN", hint: "Udara yang bergerak.", info: "ANGIN bisa terasa sejuk saat berhembus." },
+          { word: "BULAN", hint: "Terlihat pada malam hari.", info: "BULAN sering terlihat di langit malam." },
+          { word: "BINTANG", hint: "Berkelip di malam hari.", info: "BINTANG tampak kecil dan bersinar di langit." },
+          { word: "LAUT", hint: "Air sangat luas.", info: "LAUT adalah perairan luas dengan air asin." },
+          { word: "SUNGAI", hint: "Air mengalir panjang.", info: "SUNGAI mengalir dari hulu ke hilir." },
+          { word: "HUTAN", hint: "Tempat banyak pohon.", info: "HUTAN adalah tempat hidup banyak tumbuhan dan hewan." }
+        ]
+      },
+      tubuh: {
+        label: "Tubuh",
+        icon: "🧍",
+        words: [
+          { word: "MATA", hint: "Untuk melihat.", info: "MATA dipakai untuk melihat." },
+          { word: "KAKI", hint: "Untuk berjalan.", info: "KAKI membantu kita berdiri dan berjalan." },
+          { word: "TANGAN", hint: "Untuk memegang.", info: "TANGAN dipakai untuk memegang dan menulis." },
+          { word: "HIDUNG", hint: "Untuk mencium bau.", info: "HIDUNG membantu kita mencium bau." },
+          { word: "MULUT", hint: "Untuk makan dan berbicara.", info: "MULUT dipakai untuk makan dan berbicara." },
+          { word: "RAMBUT", hint: "Ada di kepala.", info: "RAMBUT tumbuh di kepala." },
+          { word: "KEPALA", hint: "Bagian atas tubuh.", info: "KEPALA adalah bagian atas tubuh kita." },
+          { word: "GIGI", hint: "Untuk menggigit makanan.", info: "GIGI membantu kita menggigit dan mengunyah makanan." }
+        ]
+      }
+    };
+
+    const LEVEL_CONFIG = {
+      easy:   { size: 8,  allowDiagonal: false, allowAllDirs: false, time: null },
+      medium: { size: 10, allowDiagonal: true,  allowAllDirs: false, time: 300 },
+      hard:   { size: 12, allowDiagonal: true,  allowAllDirs: true,  time: 240 }
+    };
+
+    const gridEl = document.getElementById("grid");
+    const wordListEl = document.getElementById("wordList");
+    const missionBadge = document.getElementById("missionBadge");
+    const learnTitle = document.getElementById("learnTitle");
+    const learnText = document.getElementById("learnText");
+    const timeBar = document.getElementById("timeBar");
+    const timeBarWrap = document.getElementById("timeBarWrap");
+    const statTheme = document.getElementById("statTheme");
+    const statLevel = document.getElementById("statLevel");
+    const statMode = document.getElementById("statMode");
+    const statTime = document.getElementById("statTime");
+
+    const startMenu = document.getElementById("startMenu");
+    const endMenu = document.getElementById("endMenu");
+    const endTitle = document.getElementById("endTitle");
+    const endSummary = document.getElementById("endSummary");
+    const endBreakdown = document.getElementById("endBreakdown");
+    const endStars = document.getElementById("endStars");
+    const themeOptions = document.getElementById("themeOptions");
+    const toastEl = document.getElementById("toast");
+
+    const playBtn = document.getElementById("playBtn");
+    const playAgainBtn = document.getElementById("playAgainBtn");
+    const openMenuBtn = document.getElementById("openMenuBtn");
+    const menuButton = document.getElementById("menuButton");
+
+    const hintBtn = document.getElementById("hintBtn");
+    const shuffleBtn = document.getElementById("shuffleBtn");
+    const newThemeBtn = document.getElementById("newThemeBtn");
+    const resetBtn = document.getElementById("resetBtn");
+
+    let currentTheme = null;
+    let currentLevel = "easy";
+    let currentMode = "relax";
+    let currentConfig = LEVEL_CONFIG.easy;
+    let activeWords = [];
+    let grid = [];
+    let foundWords = new Set();
+    let startTime = null;
+    let timerId = null;
+
+    let pointerDown = false;
+    let dragPath = [];
+    let dragCells = new Set();
+
+    const DIRS_BASIC = [
+      [0,1],[1,0],[0,-1],[-1,0]
+    ];
+    const DIRS_DIAG = [
+      [1,1],[1,-1],[-1,1],[-1,-1]
+    ];
+
+    function showToast(msg) {
+      toastEl.textContent = msg;
+      toastEl.classList.add("show");
+      setTimeout(() => toastEl.classList.remove("show"), 1600);
+    }
+
+    function formatSeconds(sec) {
+      if (sec == null) return "∞";
+      const m = Math.floor(sec / 60).toString().padStart(2,"0");
+      const s = Math.floor(sec % 60).toString().padStart(2,"0");
+      return `${m}:${s}`;
+    }
+
+    function updateHUD() {
+      statTheme.textContent = currentTheme ? GAME_DATA[currentTheme].label : "-";
+      statLevel.textContent = currentLevel.toUpperCase();
+      statMode.textContent = currentMode === "relax" ? "Santai" : "Tantangan";
+
+      if (!currentConfig.time || currentMode === "relax") {
+        statTime.textContent = "∞";
+        timeBar.style.width = "100%";
+        timeBarWrap.style.opacity = 0.3;
+      } else {
+        const used = Math.floor((Date.now() - startTime) / 1000);
+        const left = Math.max(0, currentConfig.time - used);
+        const pct = (left / currentConfig.time) * 100;
+        statTime.textContent = formatSeconds(left);
+        timeBar.style.width = `${pct}%`;
+        timeBarWrap.style.opacity = 1;
+      }
+    }
+
+    function buildThemeButtons() {
+      themeOptions.innerHTML = "";
+      Object.entries(GAME_DATA).forEach(([key, data]) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "menu-btn";
+        btn.dataset.theme = key;
+        btn.innerHTML = `${data.icon} ${data.label}<br><span class="tiny">${data.words.length} kosakata</span>`;
+        themeOptions.appendChild(btn);
+      });
+    }
+
+    function applyMenuSelection() {
+      document.querySelectorAll(".menu-btn[data-theme]").forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.theme === currentTheme);
+      });
+      document.querySelectorAll(".menu-btn[data-level]").forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.level === currentLevel);
+      });
+      document.querySelectorAll(".menu-btn[data-mode]").forEach(btn => {
+        btn.classList.toggle("selected", btn.dataset.mode === currentMode);
+      });
+    }
+
+    function initMenuEvents() {
+      themeOptions.addEventListener("click", (e) => {
+        const btn = e.target.closest(".menu-btn[data-theme]");
+        if (!btn) return;
+        currentTheme = btn.dataset.theme;
+        applyMenuSelection();
+      });
+
+      document.querySelectorAll(".menu-btn[data-level]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentLevel = btn.dataset.level;
+          currentConfig = LEVEL_CONFIG[currentLevel];
+          applyMenuSelection();
+        });
+      });
+
+      document.querySelectorAll(".menu-btn[data-mode]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentMode = btn.dataset.mode;
+          applyMenuSelection();
+        });
+      });
+
+      playBtn.addEventListener("click", () => {
+        forceStartGame();
+      });
+
+      playAgainBtn.addEventListener("click", () => {
+        endMenu.hidden = true;
+        forceStartGame();
+      });
+
+      openMenuBtn.addEventListener("click", () => {
+        endMenu.hidden = true;
+        openMenu();
+      });
+
+      menuButton.addEventListener("click", () => {
+        openMenu();
+      });
+    }
+
+    function openMenu() {
+      if (!currentTheme) currentTheme = "keluarga";
+      currentConfig = LEVEL_CONFIG[currentLevel];
+      applyMenuSelection();
+      startMenu.hidden = false;
+    }
+
+    function forceStartGame() {
+      if (!currentTheme) {
+        currentTheme = "keluarga";
+        showToast("Tema belum dipilih, pakai tema Keluarga.");
+      }
+      if (!currentLevel) currentLevel = "easy";
+      if (!currentMode) currentMode = "relax";
+      currentConfig = LEVEL_CONFIG[currentLevel];
+      startGame();
+      startMenu.hidden = true;
+      endMenu.hidden = true;
+    }
+
+    function startGame() {
+      const themeData = GAME_DATA[currentTheme];
+      activeWords = [...themeData.words];
+      foundWords.clear();
+      missionBadge.textContent = `Cari semua kata tema ${themeData.label}.`;
+      learnTitle.textContent = "Belajar Kata";
+      learnText.textContent = "Pilih kata di bawah, lalu cari di grid. Setelah ketemu, info singkat muncul di sini.";
+      buildGrid();
+      renderWordList();
+      startTime = Date.now();
+      if (timerId) clearInterval(timerId);
+      timerId = setInterval(() => {
+        updateHUD();
+        if (currentMode === "challenge" && currentConfig.time) {
+          const used = Math.floor((Date.now() - startTime) / 1000);
+          if (used >= currentConfig.time) {
+            clearInterval(timerId);
+            finishGame(false);
+          }
+        }
+      }, 500);
+      updateHUD();
+    }
+
+    function buildGrid() {
+      const size = currentConfig.size;
+      grid = Array.from({ length: size }, () =>
+        Array.from({ length: size }, () => "")
+      );
+      const dirs = (() => {
+        if (currentConfig.allowAllDirs) return [...DIRS_BASIC, ...DIRS_DIAG];
+        if (currentConfig.allowDiagonal) return [...DIRS_BASIC, ...DIRS_DIAG];
+        return DIRS_BASIC;
+      })();
+      const letters = "ABCDEFGHIKLMNOPRSTUWY";
+
+      function placeWord(word) {
+        const w = word.word.toUpperCase();
+        const maxTries = 80;
+        for (let t = 0; t < maxTries; t++) {
+          const [dx, dy] = dirs[Math.floor(Math.random() * dirs.length)];
+          let x = Math.floor(Math.random() * size);
+          let y = Math.floor(Math.random() * size);
+          const endX = x + dx * (w.length - 1);
+          const endY = y + dy * (w.length - 1);
+          if (endX < 0 || endX >= size || endY < 0 || endY >= size) continue;
+          let ok = true;
+          for (let i = 0; i < w.length; i++) {
+            const cx = x + dx * i;
+            const cy = y + dy * i;
+            const ch = grid[cy][cx];
+            if (ch && ch !== w[i]) {
+              ok = false;
+              break;
+            }
+          }
+          if (!ok) continue;
+          for (let i = 0; i < w.length; i++) {
+            const cx = x + dx * i;
+            const cy = y + dy * i;
+            grid[cy][cx] = w[i];
+          }
+          return;
+        }
+      }
+
+      activeWords.forEach(placeWord);
+
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          if (!grid[y][x]) {
+            grid[y][x] = letters[Math.floor(Math.random() * letters.length)];
+          }
+        }
+      }
+
+      renderGrid();
+    }
+
+    function renderGrid() {
+      const size = currentConfig.size;
+      gridEl.style.gridTemplateColumns = `repeat(${size}, var(--cell-size))`;
+      gridEl.innerHTML = "";
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          const div = document.createElement("div");
+          div.className = "cell";
+          div.textContent = grid[y][x];
+          div.dataset.x = x;
+          div.dataset.y = y;
+          gridEl.appendChild(div);
+        }
+      }
+      attachGridEvents();
+    }
+
+    function renderWordList() {
+      wordListEl.innerHTML = "";
+      activeWords.forEach(item => {
+        const div = document.createElement("div");
+        div.className = "word-item";
+        div.dataset.word = item.word;
+        div.textContent = item.word;
+        if (foundWords.has(item.word)) {
+          div.classList.add("done");
+        }
+        div.addEventListener("click", () => {
+          learnTitle.textContent = item.word;
+          learnText.textContent = item.info;
+        });
+        wordListEl.appendChild(div);
+      });
+    }
+
+    function attachGridEvents() {
+      const start = (ev) => {
+        const cell = ev.target.closest(".cell");
+        if (!cell) return;
+        pointerDown = true;
+        dragPath = [];
+        dragCells.clear();
+        addDragCell(cell);
+      };
+
+      const move = (ev) => {
+        if (!pointerDown) return;
+        const touch = ev.touches ? ev.touches[0] : ev;
+        const el = document.elementFromPoint(touch.clientX, touch.clientY);
+        const cell = el && el.classList && el.classList.contains("cell") ? el : el?.closest(".cell");
+        if (!cell) return;
+        addDragCell(cell);
+      };
+
+      const end = () => {
+        if (!pointerDown) return;
+        pointerDown = false;
+        checkSelection();
+        clearPreview();
+      };
+
+      gridEl.onmousedown = start;
+      gridEl.onmousemove = move;
+      document.onmouseup = end;
+
+      gridEl.ontouchstart = (e) => { start(e); };
+      gridEl.ontouchmove = (e) => { move(e); e.preventDefault(); };
+      gridEl.ontouchend = () => { end(); };
+      gridEl.ontouchcancel = () => { end(); };
+    }
+
+    function addDragCell(cell) {
+      const x = Number(cell.dataset.x);
+      const y = Number(cell.dataset.y);
+      const key = `${x},${y}`;
+      if (dragCells.has(key)) return;
+      dragCells.add(key);
+      dragPath.push({ x, y, cell });
+      updatePreview();
+    }
+
+    function updatePreview() {
+      clearPreview();
+      if (!dragPath.length) return;
+      dragPath[0].cell.classList.add("anchor");
+      dragPath.slice(1).forEach(p => p.cell.classList.add("preview"));
+    }
+
+    function clearPreview() {
+      document.querySelectorAll(".cell.preview,.cell.anchor").forEach(c => {
+        c.classList.remove("preview","anchor");
+      });
+    }
+
+    function checkSelection() {
+      if (!dragPath.length) return;
+      const letters = dragPath.map(p => grid[p.y][p.x]).join("");
+      const rev = letters.split("").reverse().join("");
+      const foundItem = activeWords.find(item =>
+        item.word === letters || item.word === rev
+      );
+      if (foundItem) {
+        foundWords.add(foundItem.word);
+        dragPath.forEach(p => p.cell.classList.add("found"));
+        renderWordList();
+        learnTitle.textContent = foundItem.word;
+        learnText.textContent = foundItem.info;
+        const total = activeWords.length;
+        const done = foundWords.size;
+        missionBadge.textContent = `Kata ditemukan: ${done} dari ${total}.`;
+        if (done === total) {
+          finishGame(true);
+        }
+      }
+    }
+
+    function finishGame(success) {
+      if (timerId) clearInterval(timerId);
+      const total = activeWords.length;
+      const usedSec = Math.floor((Date.now() - startTime) / 1000);
+      const labelMode = currentMode === "relax" ? "tanpa batas waktu" :
+        `batas ${formatSeconds(currentConfig.time)}`;
+      let stars = 1;
+      if (success) {
+        if (!currentConfig.time || currentMode === "relax") {
+          stars = 3;
+        } else if (usedSec <= currentConfig.time * 0.5) {
+          stars = 3;
+        } else if (usedSec <= currentConfig.time * 0.8) {
+          stars = 2;
+        }
+      } else {
+        stars = 0;
+      }
+
+      endTitle.textContent = success ? "Hebat!" : "Waktu Habis";
+      endSummary.textContent = success
+        ? `Kamu menemukan semua ${total} kata.`
+        : `Kamu menemukan ${foundWords.size} dari ${total} kata.`;
+
+      endBreakdown.textContent = `Mode ${currentLevel.toUpperCase()} (${labelMode}), waktu bermain ${formatSeconds(usedSec)}.`;
+
+      endStars.innerHTML = "";
+      for (let i = 0; i < 3; i++) {
+        const span = document.createElement("span");
+        span.textContent = i < stars ? "★" : "☆";
+        endStars.appendChild(span);
+      }
+
+      endMenu.hidden = false;
+    }
+
+    hintBtn.addEventListener("click", () => {
+      const remaining = activeWords.filter(w => !foundWords.has(w.word));
+      if (!remaining.length) {
+        showToast("Semua kata sudah ditemukan!");
+        return;
+      }
+      const target = remaining[Math.floor(Math.random() * remaining.length)].word;
+      let cells = [];
+      document.querySelectorAll(".cell").forEach(cell => {
+        const x = Number(cell.dataset.x);
+        const y = Number(cell.dataset.y);
+        cells.push({ x, y, cell });
+      });
+      const dirs = [...DIRS_BASIC, ...DIRS_DIAG];
+      const size = currentConfig.size;
+      for (const { x, y } of cells) {
+        for (const [dx, dy] of dirs) {
+          let s = "";
+          const path = [];
+          for (let i = 0; i < target.length; i++) {
+            const cx = x + dx * i;
+            const cy = y + dy * i;
+            if (cx < 0 || cy < 0 || cx >= size || cy >= size) {
+              s = "";
+              break;
+            }
+            const cCell = document.querySelector(`.cell[data-x="${cx}"][data-y="${cy}"]`);
+            s += cCell.textContent;
+            path.push(cCell);
+          }
+          if (s === target || s.split("").reverse().join("") === target) {
+            path.forEach(c => c.classList.add("hint"));
+            showToast(`Petunjuk: kata ${target}.`);
+            setTimeout(() => {
+              path.forEach(c => c.classList.remove("hint"));
+            }, 900);
+            return;
+          }
+        }
+      }
+      showToast("Petunjuk tidak ditemukan.");
+    });
+
+    shuffleBtn.addEventListener("click", () => {
+      buildGrid();
+      showToast("Grid diacak ulang.");
+    });
+
+    newThemeBtn.addEventListener("click", () => {
+      openMenu();
+    });
+
+    resetBtn.addEventListener("click", () => {
+      startGame();
+      showToast("Permainan diulang.");
+    });
+
+    buildThemeButtons();
+    initMenuEvents();
+    openMenu();
+  </script>
 </body>
 </html>
